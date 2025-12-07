@@ -8,6 +8,7 @@ import { BenefitsSection } from '@/components/landing/BenefitsSection';
 import { Gallery } from '@/components/landing/Gallery';
 import { Testimonials } from '@/components/landing/Testimonials';
 import { FinalCTA } from '@/components/landing/FinalCTA';
+import { ContactForm } from '@/components/landing/ContactForm';
 import { Footer } from '@/components/landing/Footer';
 import { Cart } from '@/components/landing/Cart';
 
@@ -32,6 +33,7 @@ export default function Home() {
         <Gallery />
         <Testimonials />
         <FinalCTA onScrollToPlans={scrollToPlans} />
+        <ContactForm />
       </main>
       <Footer />
       <Cart />
