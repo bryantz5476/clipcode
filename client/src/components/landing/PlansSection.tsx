@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowRight, Star } from 'lucide-react';
 import { useShopifyCart, useShopifyProducts } from '@/hooks/use-shopify';
+import { trackPlanClick, trackAddToCart } from '@/lib/analytics';
 
 const plans = [
   {
@@ -169,12 +170,22 @@ export const PlansSection = forwardRef<HTMLElement>((props, ref) => {
   const { products } = useShopifyProducts();
 
   const handleSelectPlan = (planId: string) => {
+    const selectedPlan = plans.find(p => p.id === planId);
+    if (selectedPlan) {
+      trackPlanClick(planId, selectedPlan.name, selectedPlan.price);
+    }
+
     if (isConnected && products.length > 0) {
       const matchingProduct = products.find(p => 
         p.handle.toLowerCase().includes(planId) || 
         p.title.toLowerCase().includes(planId)
       );
       if (matchingProduct && matchingProduct.variants[0]) {
+        trackAddToCart(
+          matchingProduct.variants[0].id, 
+          matchingProduct.title,
+          matchingProduct.variants[0].price?.amount
+        );
         addToCart(matchingProduct.variants[0].id);
       }
     } else {

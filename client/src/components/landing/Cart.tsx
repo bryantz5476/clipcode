@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { X, Minus, Plus, ShoppingBag, ArrowRight } from 'lucide-react';
+import { X, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useShopifyCart } from '@/hooks/use-shopify';
+import { trackCheckoutStart } from '@/lib/analytics';
 
 export function Cart() {
   const { 
@@ -121,7 +122,16 @@ export function Cart() {
                 </div>
                 
                 <Button
-                  onClick={checkout}
+                  onClick={() => {
+                    if (cart) {
+                      trackCheckoutStart(
+                        cart.subtotalPrice.amount,
+                        cart.subtotalPrice.currencyCode,
+                        cart.lineItems.length
+                      );
+                    }
+                    checkout();
+                  }}
                   className="w-full bg-white text-navy-900 font-semibold py-6"
                   disabled={loading}
                   data-testid="button-checkout"
