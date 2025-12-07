@@ -1,0 +1,165 @@
+import { useRef, useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { Card } from '@/components/ui/card';
+import { 
+  Globe, 
+  ShoppingCart, 
+  Calendar, 
+  BarChart, 
+  Smartphone, 
+  Search,
+  Zap,
+  Lock
+} from 'lucide-react';
+
+const services = [
+  {
+    icon: Globe,
+    title: 'Diseño Web',
+    description: 'Webs modernas y elegantes que representan tu marca con profesionalidad'
+  },
+  {
+    icon: ShoppingCart,
+    title: 'E-commerce',
+    description: 'Tiendas online con Shopify para vender tus productos sin límites'
+  },
+  {
+    icon: Calendar,
+    title: 'Sistema de Citas',
+    description: 'Agenda online integrada para que tus clientes reserven fácilmente'
+  },
+  {
+    icon: BarChart,
+    title: 'Analytics',
+    description: 'Seguimiento de métricas para entender y mejorar tu negocio'
+  },
+  {
+    icon: Smartphone,
+    title: 'Diseño Responsive',
+    description: 'Tu web perfecta en móvil, tablet y escritorio'
+  },
+  {
+    icon: Search,
+    title: 'SEO Optimizado',
+    description: 'Posicionamiento en Google para que te encuentren'
+  },
+  {
+    icon: Zap,
+    title: 'Alta Velocidad',
+    description: 'Carga ultra rápida para mejor experiencia de usuario'
+  },
+  {
+    icon: Lock,
+    title: 'SSL Seguro',
+    description: 'Certificado de seguridad para proteger tu web y clientes'
+  }
+];
+
+function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const rotateX = useSpring(useTransform(y, [-100, 100], [10, -10]), { stiffness: 300, damping: 30 });
+  const rotateY = useSpring(useTransform(x, [-100, 100], [-10, 10]), { stiffness: 300, damping: 30 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    x.set(e.clientX - centerX);
+    y.set(e.clientY - centerY);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+    setIsHovered(false);
+  };
+
+  const Icon = service.icon;
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX: isHovered ? rotateX : 0,
+        rotateY: isHovered ? rotateY : 0,
+        transformStyle: 'preserve-3d',
+      }}
+      className="flex-shrink-0 w-72"
+    >
+      <Card className="relative p-6 h-56 bg-gradient-to-br from-navy-900 to-navy-950 border-blue-500/10 overflow-visible">
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent rounded-md opacity-0"
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        />
+        <div className="relative z-10">
+          <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
+            <Icon className="w-6 h-6 text-blue-400" />
+          </div>
+          <h3 className="text-lg font-semibold text-white mb-2">{service.title}</h3>
+          <p className="text-sm text-gray-400 leading-relaxed">{service.description}</p>
+        </div>
+        <motion.div
+          className="absolute -bottom-1 left-4 right-4 h-1 bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        />
+      </Card>
+    </motion.div>
+  );
+}
+
+export function ServicesCarousel() {
+  return (
+    <section className="py-20 bg-black overflow-hidden" data-testid="section-services">
+      <div className="max-w-7xl mx-auto px-6 mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-display">
+            Servicios que Impulsan tu Negocio
+          </h2>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            Todo lo que necesitas para una presencia digital profesional y efectiva
+          </p>
+        </motion.div>
+      </div>
+
+      <div className="relative">
+        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+        
+        <motion.div
+          className="flex gap-6 py-4"
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{
+            x: {
+              repeat: Infinity,
+              repeatType: 'loop',
+              duration: 40,
+              ease: 'linear',
+            },
+          }}
+        >
+          {[...services, ...services].map((service, index) => (
+            <ServiceCard key={index} service={service} index={index} />
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
