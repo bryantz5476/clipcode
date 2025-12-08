@@ -1,12 +1,12 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-import { 
-  Globe, 
-  ShoppingCart, 
-  Calendar, 
-  BarChart, 
-  Smartphone, 
+import {
+  Globe,
+  ShoppingCart,
+  Calendar,
+  BarChart,
+  Smartphone,
   Search,
   Zap,
   Lock
@@ -58,10 +58,10 @@ const services = [
 function ServiceCard({ service, index }: { service: typeof services[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
+
   const rotateX = useSpring(useTransform(y, [-100, 100], [10, -10]), { stiffness: 300, damping: 30 });
   const rotateY = useSpring(useTransform(x, [-100, 100], [-10, 10]), { stiffness: 300, damping: 30 });
 
@@ -119,7 +119,18 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
   );
 }
 
+// Add detailed logic for responsive speed
+// Add detailed logic for responsive speed
 export function ServicesCarousel() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile(); // initial
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <section className="py-20 bg-black overflow-hidden" data-testid="section-services">
       <div className="max-w-7xl mx-auto px-6 mb-12">
@@ -142,7 +153,7 @@ export function ServicesCarousel() {
       <div className="relative">
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
-        
+
         <motion.div
           className="flex gap-6 py-4"
           animate={{ x: ['0%', '-50%'] }}
@@ -150,13 +161,25 @@ export function ServicesCarousel() {
             x: {
               repeat: Infinity,
               repeatType: 'loop',
-              duration: 40,
+              duration: isMobile ? 15 : 40, // 15s for mobile (very fast), 40s for desktop
               ease: 'linear',
             },
           }}
         >
-          {[...services, ...services].map((service, index) => (
-            <ServiceCard key={index} service={service} index={index} />
+          {/* Quadruple items for safety */}
+          {[...services, ...services, ...services, ...services].map((service, index) => (
+            <motion.div
+              key={index}
+              animate={{ y: [0, -10, 0] }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: index * 0.2, // Staggered floating
+              }}
+            >
+              <ServiceCard service={service} index={index} />
+            </motion.div>
           ))}
         </motion.div>
       </div>

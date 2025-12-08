@@ -38,70 +38,74 @@ export function Header({ onScrollToPlans }: { onScrollToPlans: () => void }) {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-black/80 backdrop-blur-lg border-b border-blue-500/10' 
-            : 'bg-transparent'
-        }`}
+        className="fixed top-6 left-0 right-0 z-50 pointer-events-none"
       >
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <motion.a
-            href="#"
-            className="text-xl font-bold text-white font-display"
-            whileHover={{ scale: 1.02 }}
-            data-testid="link-logo"
-          >
-            <span className="text-blue-400">Dev</span>Studio
-          </motion.a>
+        <div
+          className={`max-w-5xl mx-auto rounded-full border transition-all duration-300 pointer-events-auto ${isScrolled
+              ? 'bg-black/60 backdrop-blur-xl border-white/10 shadow-2xl shadow-blue-900/10'
+              : 'bg-black/40 backdrop-blur-md border-transparent'
+            }`}
+        >
+          <div className="px-6 h-16 flex items-center justify-between">
+            <motion.a
+              href="#"
+              className="text-xl font-bold text-white font-display"
+              whileHover={{ scale: 1.02 }}
+              data-testid="link-logo"
+            >
+              <span className="text-blue-400">Clip</span>Code
+            </motion.a>
 
-          <nav className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-sm text-gray-300 transition-colors font-medium"
-                data-testid={`link-nav-${item.id}`}
+            <nav className="hidden md:flex items-center gap-8">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="text-sm text-gray-300 hover:text-white transition-colors font-medium relative group"
+                  data-testid={`link-nav-${item.id}`}
+                >
+                  {item.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-blue-500 transition-all group-hover:w-full" />
+                </button>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-4">
+              {isConnected && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={openCart}
+                  className="relative text-white hover:bg-white/10 rounded-full"
+                  data-testid="button-cart"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  {itemCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">
+                      {itemCount}
+                    </span>
+                  )}
+                </Button>
+              )}
+
+              <Button
+                onClick={onScrollToPlans}
+                className="hidden sm:flex bg-white hover:bg-blue-50 text-navy-900 font-medium rounded-full px-6"
+                data-testid="button-header-contratar"
               >
-                {item.label}
-              </button>
-            ))}
-          </nav>
+                Contratar
+              </Button>
 
-          <div className="flex items-center gap-4">
-            {isConnected && (
               <Button
                 size="icon"
                 variant="ghost"
-                onClick={openCart}
-                className="relative text-white"
-                data-testid="button-cart"
+                className="md:hidden text-white hover:bg-white/10 rounded-full"
+                onClick={() => setIsMobileMenuOpen(true)}
+                data-testid="button-mobile-menu"
               >
-                <ShoppingCart className="w-5 h-5" />
-                {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">
-                    {itemCount}
-                  </span>
-                )}
+                <Menu className="w-6 h-6" />
               </Button>
-            )}
-
-            <Button
-              onClick={onScrollToPlans}
-              className="hidden sm:flex bg-white text-navy-900 font-medium"
-              data-testid="button-header-contratar"
-            >
-              Contratar
-            </Button>
-
-            <Button
-              size="icon"
-              variant="ghost"
-              className="md:hidden text-white"
-              onClick={() => setIsMobileMenuOpen(true)}
-              data-testid="button-mobile-menu"
-            >
-              <Menu className="w-6 h-6" />
-            </Button>
+            </div>
           </div>
         </div>
       </motion.header>
@@ -114,11 +118,11 @@ export function Header({ onScrollToPlans }: { onScrollToPlans: () => void }) {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 md:hidden"
           >
-            <div 
+            <div
               className="absolute inset-0 bg-black/80 backdrop-blur-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            
+
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}

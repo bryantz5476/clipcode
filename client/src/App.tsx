@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 
+
 function Router() {
   return (
     <Switch>
@@ -25,5 +26,7 @@ function App() {
     </QueryClientProvider>
   );
 }
+
+
 
 export default App;

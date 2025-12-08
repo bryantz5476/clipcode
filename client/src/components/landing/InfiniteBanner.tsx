@@ -23,19 +23,20 @@ export function InfiniteBanner() {
             x: {
               repeat: Infinity,
               repeatType: 'loop',
-              duration: 25,
+              duration: 30, // Slightly slower for better readability
               ease: 'linear',
             },
           }}
         >
-          {[...items, ...items].map((item, index) => {
+          {/* Quadruple the items to ensure a massive buffer for seamless looping */}
+          {[...items, ...items, ...items, ...items].map((item, index) => {
             const Icon = item.icon;
             return (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="flex items-center gap-3 text-white/70"
               >
-                <Icon className="w-5 h-5 text-blue-400" />
+                <Icon className="w-5 h-5 text-blue-400 animate-pulse" />
                 <span className="text-sm font-medium tracking-wide uppercase">{item.text}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500/50 ml-6" />
               </div>

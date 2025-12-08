@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { SiInstagram, SiLinkedin, SiX } from 'react-icons/si';
+import { SiInstagram, SiTiktok, SiWhatsapp } from 'react-icons/si';
 
 export function Footer() {
   return (
@@ -9,17 +9,17 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div className="md:col-span-2">
             <a href="#" className="text-2xl font-bold text-white font-display inline-block mb-4">
-              <span className="text-blue-400">Dev</span>Studio
+              <span className="text-blue-400">Clip</span>Code
             </a>
             <p className="text-gray-400 max-w-md mb-6 leading-relaxed">
-              Desarrollo web profesional para negocios que buscan destacar. 
+              Desarrollo web profesional para negocios que buscan destacar.
               Desde presencia básica hasta e-commerce completo con Shopify.
             </p>
             <div className="flex gap-4">
               {[
                 { icon: SiInstagram, label: 'Instagram' },
-                { icon: SiLinkedin, label: 'LinkedIn' },
-                { icon: SiX, label: 'X' }
+                { icon: SiTiktok, label: 'Tiktok' },
+                { icon: SiWhatsapp, label: 'WhatsApp' }
               ].map((social) => {
                 const Icon = social.icon;
                 return (
@@ -47,8 +47,8 @@ export function Footer() {
                 { label: 'Contacto', href: '#contact' }
               ].map((link) => (
                 <li key={link.label}>
-                  <a 
-                    href={link.href} 
+                  <a
+                    href={link.href}
                     className="text-gray-400 text-sm"
                     data-testid={`link-footer-${link.label.toLowerCase()}`}
                   >
@@ -68,7 +68,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Phone className="w-4 h-4 text-blue-400" />
-                <span>+34 600 000 000</span>
+                <span>+34 607 328 443</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <MapPin className="w-4 h-4 text-blue-400" />

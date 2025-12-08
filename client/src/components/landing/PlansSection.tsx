@@ -1,244 +1,245 @@
-import { useRef, forwardRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Card } from '@/components/ui/card';
+import { forwardRef, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowRight, Star } from 'lucide-react';
-import { useShopifyCart, useShopifyProducts } from '@/hooks/use-shopify';
-import { trackPlanClick, trackAddToCart } from '@/lib/analytics';
+import { Check, ArrowRight, Sparkles, Loader2, MessageCircle } from 'lucide-react'; // Añadí icono de MessageCircle
+import { useShopifyProducts, useShopifyCart } from '@/hooks/use-shopify';
 
 const plans = [
   {
     id: 'basico',
     name: 'Plan Básico',
-    price: '499',
-    description: 'Web simple de 3 secciones, ideal para negocios que quieren presencia básica sin invertir demasiado.',
+    price: '250',
+    description: 'Ideal para iniciar tu presencia digital con lo esencial.',
     features: [
-      'Diseño profesional de 3 secciones',
-      'Optimización móvil',
-      'Formulario de contacto',
-      'SSL incluido',
-      'Hosting 1 año',
-      'Soporte básico'
+      'Estructura Corporativa de 3 secciones',
+      'Web One-Page',
+      'Dominio incluido (1 año)',
+      'Tecnología "Instant Load"',
+      'Integración Google Maps',
+      'Alojamiento Cloud Seguro (HTTPS)',
+      'Hosting de Alta Velocidad',
+      'Conexión con Redes Sociales'
     ],
     highlighted: false,
-    cta: 'Empezar Ahora'
+    cta: 'Comprar Ahora', // CTA directo
+    isShopifyAction: true, // ESTE AHORA ES EL QUE SE COMPRA DIRECTO
   },
   {
     id: 'profesional',
     name: 'Plan Profesional',
-    price: '999',
-    description: 'Web moderna, actualizada, optimizada, con sistema de citas integrado. Pensada para negocios que quieren dar un salto real.',
+    price: '490',
+    description: 'La opción preferida. Escala tu negocio con reservas automáticas.',
     features: [
-      'Diseño premium personalizado',
-      'Hasta 8 secciones',
-      'Sistema de citas integrado',
-      'SEO avanzado',
-      'Analytics integrado',
-      'Hosting 2 años',
-      'Soporte prioritario',
-      'Actualizaciones incluidas'
+      'Todo lo del Plan Básico +',
+      'Diseño Moderno y Atractivo',
+      'Estructura Corporativa de 5 secciones',
+      'Integración de Sistema de Citas',
+      'SEO Local Estratégico',
+      'Galería de Trabajos Profesional',
+      'Soporte Prioritario de 30 días',
+      'Hosting de Alta Velocidad'
     ],
     highlighted: true,
-    cta: 'Elegir Profesional'
+    cta: 'Solicitar Consultoría', // CTA de contacto
+    link: 'https://wa.me/34607328443?text=Hola,%20me%20interesa%20el%20Plan%20Profesional%20de%20490%E2%82%AC.%20%C2%BFMe%20puedes%20dar%20m%C3%A1s%20informaci%C3%B3n%3F'
   },
   {
     id: 'ecommerce',
     name: 'Plan E-commerce',
-    price: '1.999',
-    description: 'Web conectada totalmente a Shopify para tener la potencia y legalidad de una tienda profesional con motor propio.',
+    price: '990',
+    description: 'Vende mientras duermes sin complicaciones técnicas.',
     features: [
-      'Tienda Shopify completa',
-      'Diseño premium exclusivo',
-      'Gestión de productos ilimitados',
-      'Pasarela de pagos',
-      'Inventario automatizado',
-      'SEO para e-commerce',
-      'Formación incluida',
-      'Soporte VIP 24/7'
+      'Tienda Completa Optimizada',
+      'Pasarelas de Pago Seguras',
+      'Catálogo Inicial',
+      'Inventario Automatizado',
+      'Panel de Gestión Intuitivo',
+      'Legalidad Básica',
+      'Tecnología "Instant Load" y SEO',
+      'Hosting de Alta Velocidad'
     ],
     highlighted: false,
-    cta: 'Crear Mi Tienda'
+    cta: 'Agendar Reunión', // CTA de contacto High Ticket
+    link: 'https://wa.me/34607328443?text=Hola,%20estoy%20interesado%20en%20el%20Plan%20E-commerce%20de%20990%E2%82%AC'
   }
 ];
 
-function PlanCard({ 
-  plan, 
-  index, 
-  onSelect 
-}: { 
-  plan: typeof plans[0]; 
+function MagicCard({
+  plan,
+  index,
+  onAction,
+  isLoading
+}: {
+  plan: typeof plans[0];
   index: number;
-  onSelect: (planId: string) => void;
+  onAction: () => void;
+  isLoading?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  
-  const rotateX = useSpring(useTransform(y, [-200, 200], [5, -5]), { stiffness: 300, damping: 30 });
-  const rotateY = useSpring(useTransform(x, [-200, 200], [-5, 5]), { stiffness: 300, damping: 30 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(e.clientX - centerX);
-    y.set(e.clientY - centerY);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.15 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: 'preserve-3d',
-      }}
-      className={`relative ${plan.highlighted ? 'z-10 scale-105' : ''}`}
-    >
+    <div className="relative h-full group">
+      {/* MAGIC BORDER LAYER */}
+      <div className={`absolute -inset-[2px] rounded-3xl overflow-hidden ${plan.highlighted ? 'opacity-100' : 'opacity-100'}`}>
+        <motion.div
+          className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] opacity-40 via-blue-500 to-transparent w-[300%] h-[300%] left-[-100%] top-[-100%]"
+          style={{
+            backgroundImage: plan.highlighted
+              ? 'conic-gradient(from 0deg, transparent 0 320deg, #3b82f6 340deg, #2563EB 360deg)'
+              : 'conic-gradient(from 0deg, transparent 0 300deg, #94a3b8 360deg)'
+          }}
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: plan.highlighted ? 4 : 3,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+      </div>
+
+      {/* BLURRY GLOW */}
       {plan.highlighted && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
-          <Badge className="bg-blue-500 text-white px-4 py-1 text-sm font-medium">
-            <Star className="w-3 h-3 mr-1 inline" />
-            Más Popular
-          </Badge>
-        </div>
+        <div className="absolute -inset-1 rounded-3xl bg-blue-600/20 blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
       )}
-      
-      <Card className={`relative p-8 h-full ${
-        plan.highlighted 
-          ? 'bg-gradient-to-br from-blue-900/50 via-navy-900 to-navy-950 border-blue-500/30' 
-          : 'bg-gradient-to-br from-navy-900 to-navy-950 border-blue-500/10'
-      }`}>
+
+      {/* CONTENT CONTAINER */}
+      <div className={`relative h-full rounded-[22px] bg-[#020617] p-8 flex flex-col border transition-all duration-300 ${plan.highlighted
+        ? 'border-blue-500/20 shadow-2xl shadow-blue-900/10'
+        : 'border-white/5 hover:border-white/10'
+        }`}>
+
         {plan.highlighted && (
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent rounded-md" />
-        )}
-        
-        <div className="relative z-10">
-          <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
-          <div className="flex items-baseline gap-1 mb-4">
-            <span className="text-4xl font-bold text-white">{plan.price}</span>
-            <span className="text-gray-400">EUR</span>
+          <div className="absolute top-0 right-0 p-4">
+            <Badge className="bg-blue-600 text-white border-none py-1 px-3 shadow-lg shadow-blue-600/40 animate-pulse">
+              <Sparkles className="w-3 h-3 mr-1 inline" /> POPULAR
+            </Badge>
           </div>
-          
-          <p className="text-gray-400 text-sm leading-relaxed mb-6 min-h-[60px]">
+        )}
+
+        <div className="mb-8">
+          <h3 className={`text-xl font-medium mb-3 ${plan.highlighted ? 'text-white' : 'text-gray-300'}`}>{plan.name}</h3>
+          <div className="flex items-baseline gap-1">
+            <span className="text-5xl font-bold text-white tracking-tight">{plan.price}</span>
+            <span className="text-lg text-gray-500">€</span>
+          </div>
+          <p className="mt-4 text-sm text-gray-400 leading-relaxed min-h-[60px]">
             {plan.description}
           </p>
-          
-          <Button 
-            className={`w-full mb-6 ${
-              plan.highlighted 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-white text-navy-900'
-            }`}
-            onClick={() => onSelect(plan.id)}
-            data-testid={`button-select-${plan.id}`}
-          >
-            {plan.cta}
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-          
-          <ul className="space-y-3">
-            {plan.features.map((feature, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <Check className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-gray-300">{feature}</span>
-              </li>
-            ))}
-          </ul>
         </div>
-      </Card>
-    </motion.div>
+
+        {/* CTA BUTTON */}
+        <div className="mb-8">
+          <Button
+            onClick={onAction}
+            disabled={isLoading && plan.isShopifyAction}
+            className={`w-full py-6 rounded-xl transition-all duration-300 ${plan.highlighted
+              ? 'bg-white text-navy-950 font-bold hover:bg-gray-100 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] border-transparent'
+              : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
+              }`}
+          >
+            {isLoading && plan.isShopifyAction ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                {/* Icono dinámico: Carrito para Básico, WhatsApp para el resto */}
+                {plan.cta}
+                {plan.isShopifyAction ? (
+                  <ArrowRight className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
+                ) : (
+                  <MessageCircle className={`w-4 h-4 ml-2 ${plan.highlighted ? 'text-navy-950' : 'opacity-50 group-hover:opacity-100'}`} />
+                )}
+              </>
+            )}
+          </Button>
+        </div>
+
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
+
+        <ul className="space-y-4 mt-auto">
+          {plan.features.map((feature, i) => (
+            <li key={i} className="flex items-start gap-3">
+              <div className={`mt-0.5 rounded-full p-0.5 ${plan.highlighted ? 'bg-blue-500/20' : 'bg-gray-800'}`}>
+                <Check className={`w-3.5 h-3.5 ${plan.highlighted ? 'text-blue-400' : 'text-gray-500'}`} />
+              </div>
+              <span className="text-sm text-gray-300 group-hover:text-white transition-colors">{feature}</span>
+            </li>
+          ))}
+        </ul>
+
+      </div>
+    </div>
   );
 }
 
 export const PlansSection = forwardRef<HTMLElement>((props, ref) => {
-  const { addToCart, isConnected } = useShopifyCart();
   const { products } = useShopifyProducts();
+  const { addToCart, loading: cartLoading } = useShopifyCart();
 
-  const handleSelectPlan = (planId: string) => {
-    const selectedPlan = plans.find(p => p.id === planId);
-    if (selectedPlan) {
-      trackPlanClick(planId, selectedPlan.name, selectedPlan.price);
+  // 🔍 BUSCAR EL ID DEL PLAN BÁSICO (Ahora es este el que se compra)
+  const basicPlanVariantId = useMemo(() => {
+    // Intenta buscar por título "Basico" o "Básico"
+    const productByTitle = products.find(p =>
+      p.title.toLowerCase().includes('basico') ||
+      p.title.toLowerCase().includes('básico') ||
+      p.title.toLowerCase().includes('plan 1')
+    );
+
+    if (productByTitle && productByTitle.variants.length > 0) {
+      return productByTitle.variants[0].id;
     }
 
-    if (isConnected && products.length > 0) {
-      const matchingProduct = products.find(p => 
-        p.handle.toLowerCase().includes(planId) || 
-        p.title.toLowerCase().includes(planId)
-      );
-      if (matchingProduct && matchingProduct.variants[0]) {
-        trackAddToCart(
-          matchingProduct.variants[0].id, 
-          matchingProduct.title,
-          matchingProduct.variants[0].price?.amount
-        );
-        addToCart(matchingProduct.variants[0].id);
+    // Fallback: Si no lo encuentra, usa el primer producto disponible como seguridad
+    if (products.length > 0 && products[0].variants.length > 0) {
+      return products[0].variants[0].id;
+    }
+
+    return null;
+  }, [products]);
+
+  // MANEJADOR UNIFICADO DE ACCIONES
+  const handleAction = (plan: typeof plans[0]) => {
+    if (plan.isShopifyAction) {
+      // LOGICA SHOPIFY (Plan Básico)
+      if (basicPlanVariantId) {
+        addToCart(basicPlanVariantId);
+      } else {
+        console.warn('Variante de Plan Básico no encontrada. Redirigiendo a WhatsApp.');
+        window.open('https://wa.me/34607328443?text=Hola,%20quiero%20comprar%20el%20Plan%20B%C3%A1sico%20pero%20el%20bot%C3%B3n%20fall%C3%B3', '_blank');
       }
-    } else {
-      const contactSection = document.getElementById('contact');
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: 'smooth' });
-      }
+    } else if (plan.link) {
+      // LOGICA WHATSAPP (Plan Pro y Ecommerce)
+      window.open(plan.link, '_blank');
     }
   };
 
   return (
-    <section 
-      ref={ref}
-      className="py-24 bg-gradient-to-b from-black via-navy-950 to-black" 
-      id="planes"
-      data-testid="section-plans"
-    >
-      <div className="max-w-7xl mx-auto px-6">
+    <section ref={ref} id="planes" className="py-32 bg-[#020617] relative overflow-hidden">
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 font-display">
-            Elige Tu Plan Perfecto
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight font-display">
+            Inversión <span className="text-blue-500">Inteligente</span>
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-            Tres opciones diseñadas para adaptarse a las necesidades de tu negocio
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Claridad total. Sin sorpresas. Escala al siguiente nivel.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 items-stretch">
+        <div className="grid md:grid-cols-3 gap-8 lg:gap-12 items-stretch">
           {plans.map((plan, index) => (
-            <PlanCard 
-              key={plan.id} 
-              plan={plan} 
-              index={index} 
-              onSelect={handleSelectPlan}
+            <MagicCard
+              key={plan.id}
+              plan={plan}
+              index={index}
+              onAction={() => handleAction(plan)}
+              isLoading={plan.isShopifyAction && cartLoading}
             />
           ))}
         </div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-center text-gray-500 text-sm mt-12"
-        >
-          Todos los precios son netos. IVA no incluido. Posibilidad de pago fraccionado.
-        </motion.p>
       </div>
     </section>
   );
