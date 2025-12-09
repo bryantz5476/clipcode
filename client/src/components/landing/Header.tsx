@@ -42,8 +42,8 @@ export function Header({ onScrollToPlans }: { onScrollToPlans: () => void }) {
       >
         <div
           className={`max-w-5xl mx-auto rounded-full border transition-all duration-300 pointer-events-auto ${isScrolled
-              ? 'bg-black/60 backdrop-blur-xl border-white/10 shadow-2xl shadow-blue-900/10'
-              : 'bg-black/40 backdrop-blur-md border-transparent'
+            ? 'bg-black/60 backdrop-blur-xl border-white/10 shadow-2xl shadow-blue-900/10'
+            : 'bg-black/40 backdrop-blur-md border-transparent'
             }`}
         >
           <div className="px-6 h-16 flex items-center justify-between">
@@ -133,7 +133,7 @@ export function Header({ onScrollToPlans }: { onScrollToPlans: () => void }) {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-8">
                   <span className="text-xl font-bold text-white font-display">
-                    <span className="text-blue-400">Dev</span>Studio
+                    <span className="text-blue-400">Clip</span>Code
                   </span>
                   <Button
                     size="icon"

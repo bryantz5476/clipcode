@@ -89,7 +89,7 @@ function MagicCard({
           }}
           animate={{ rotate: 360 }}
           transition={{
-            duration: plan.highlighted ? 4 : 3,
+            duration: 3,
             repeat: Infinity,
             ease: "linear"
           }}
@@ -140,12 +140,11 @@ function MagicCard({
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               <>
-                {/* Icono dinámico: Carrito para Básico, WhatsApp para el resto */}
                 {plan.cta}
                 {plan.isShopifyAction ? (
                   <ArrowRight className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
                 ) : (
-                  <MessageCircle className={`w-4 h-4 ml-2 ${plan.highlighted ? 'text-navy-950' : 'opacity-50 group-hover:opacity-100'}`} />
+                  <MessageCircle className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
                 )}
               </>
             )}

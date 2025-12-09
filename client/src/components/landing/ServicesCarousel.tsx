@@ -155,13 +155,15 @@ export function ServicesCarousel() {
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
 
         <motion.div
-          className="flex gap-6 py-4"
-          animate={{ x: ['0%', '-50%'] }}
+          key={isMobile ? 'mobile' : 'desktop'}
+          className="flex py-4 w-max"
+          initial={{ x: '0%' }}
+          animate={{ x: '-50%' }}
           transition={{
             x: {
               repeat: Infinity,
               repeatType: 'loop',
-              duration: isMobile ? 15 : 40, // 15s for mobile (very fast), 40s for desktop
+              duration: isMobile ? 5 : 30, // 5s mobile (Ultra Fast), 30s desktop
               ease: 'linear',
             },
           }}
@@ -170,6 +172,7 @@ export function ServicesCarousel() {
           {[...services, ...services, ...services, ...services].map((service, index) => (
             <motion.div
               key={index}
+              className="pr-6"
               animate={{ y: [0, -10, 0] }}
               transition={{
                 duration: 4,

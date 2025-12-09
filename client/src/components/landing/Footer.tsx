@@ -17,15 +17,15 @@ export function Footer() {
             </p>
             <div className="flex gap-4">
               {[
-                { icon: SiInstagram, label: 'Instagram' },
-                { icon: SiTiktok, label: 'Tiktok' },
-                { icon: SiWhatsapp, label: 'WhatsApp' }
+                { icon: SiInstagram, label: 'Instagram', href: '#' },
+                { icon: SiTiktok, label: 'Tiktok', href: '#' },
+                { icon: SiWhatsapp, label: 'WhatsApp', href: 'https://wa.me/34607328443' }
               ].map((social) => {
                 const Icon = social.icon;
                 return (
                   <a
                     key={social.label}
-                    href="#"
+                    href={social.href}
                     className="w-10 h-10 rounded-lg bg-navy-900 border border-blue-500/10 flex items-center justify-center text-gray-400 transition-colors"
                     aria-label={social.label}
                     data-testid={`link-social-${social.label.toLowerCase()}`}
@@ -64,7 +64,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail className="w-4 h-4 text-blue-400" />
-                <span>hola@devstudio.es</span>
+                <span>hola@clipcode.es</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Phone className="w-4 h-4 text-blue-400" />
@@ -80,7 +80,7 @@ export function Footer() {
 
         <div className="pt-8 border-t border-blue-500/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-500 text-sm">
-            2024 DevStudio. Todos los derechos reservados.
+            2025 ClipCode. Todos los derechos reservados.
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-gray-500 text-sm" data-testid="link-privacy">

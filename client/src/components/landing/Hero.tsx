@@ -18,7 +18,9 @@ function ParticleCanvas() {
     let h = canvas.height = window.innerHeight;
 
     // Config
-    const particleCount = 200;
+    // Config - Optimized for performance
+    const isMobile = window.innerWidth < 768;
+    const particleCount = isMobile ? 60 : 180; // Reduce load on mobile devices
     const connectionDistance = 150;
     const mouseDistance = 200;
 
@@ -187,7 +189,7 @@ function TiltCard() {
               className="absolute inset-0 bg-blue-400 rounded-2xl blur-lg -z-10"
             />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">High Performance</h3>
+          <h3 className="text-xl font-bold text-white mb-2">Alto Rendimiento</h3>
           <div className="flex gap-2 justify-center">
             {[1, 2, 3].map((i) => (
               <motion.div
@@ -352,9 +354,18 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
               className="mt-12 flex items-center gap-6 text-sm text-gray-500 font-medium"
             >
               <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-[#020617] bg-gray-800 flex items-center justify-center text-xs text-white">
-                    <div className="w-full h-full rounded-full bg-gradient-to-br from-gray-700 to-gray-600 animate-pulse" style={{ animationDelay: `${i * 0.5}s` }} />
+                {[
+                  { name: 'NexTech', src: '/logo-nextech.png' },
+                  { name: 'Orbital', src: '/logo-orbital.png' },
+                  { name: 'Vertex', src: '/logo-vertex.png' },
+                  { name: 'Angel', src: '/angel.webp' }
+                ].map((logo, i) => (
+                  <div
+                    key={i}
+                    className="w-10 h-10 rounded-full border-2 border-[#020617] bg-white flex items-center justify-center overflow-hidden relative animate-pulse"
+                    style={{ animationDelay: i % 2 === 0 ? '0s' : '1s' }}
+                  >
+                    <img src={logo.src} alt={logo.name} className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>

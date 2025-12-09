@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useInView, animate } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -25,11 +25,35 @@ const testimonials = [
 ];
 
 const stats = [
-  { value: '150+', label: 'Proyectos Completados' },
-  { value: '98%', label: 'Clientes Satisfechos' },
-  { value: '5+', label: 'Años de Experiencia' },
-  { value: '24/7', label: 'Soporte Disponible' }
+  { number: 150, suffix: '+', label: 'Proyectos Completados' },
+  { number: 98, suffix: '%', label: 'Clientes Satisfechos' },
+  { number: 5, suffix: '+', label: 'Años de Experiencia' },
+  { text: '24/7', label: 'Soporte Disponible' }
 ];
+
+function Counter({ from, to, suffix = '' }: { from: number; to: number; suffix?: string }) {
+  const nodeRef = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(nodeRef, { once: true, margin: "-100px" });
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const node = nodeRef.current;
+    const controls = animate(from, to, {
+      duration: 2,
+      ease: "easeOut",
+      onUpdate(value) {
+        if (node) {
+          node.textContent = Math.round(value) + suffix;
+        }
+      }
+    });
+
+    return () => controls.stop();
+  }, [from, to, isInView, suffix]);
+
+  return <span ref={nodeRef} />;
+}
 
 export function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -180,7 +204,11 @@ export function Testimonials() {
               className="text-center"
             >
               <div className="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">
-                {stat.value}
+                {'number' in stat ? (
+                  <Counter from={0} to={(stat as any).number} suffix={(stat as any).suffix} />
+                ) : (
+                  stat.text
+                )}
               </div>
               <div className="text-sm text-gray-500 uppercase tracking-widest">{stat.label}</div>
             </motion.div>
