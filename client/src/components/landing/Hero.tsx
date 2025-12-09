@@ -3,26 +3,26 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'fram
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Zap, MousePointer2, MessageCircle } from 'lucide-react'; // Añadí MessageCircle por si quieres cambiar el icono, aunque MousePointer2 está bien
 
-/* --- Canvas Particle System (INTACTO) --- */
+/* --- Canvas Particle System (OPTIMIZED) --- */
 function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
+  const isVisibleRef = useRef(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: false });
     if (!ctx) return;
 
     let w = canvas.width = window.innerWidth;
     let h = canvas.height = window.innerHeight;
 
-    // Config
     // Config - Optimized for performance
     const isMobile = window.innerWidth < 768;
-    const particleCount = isMobile ? 60 : 180; // Reduce load on mobile devices
-    const connectionDistance = 150;
-    const mouseDistance = 200;
+    const particleCount = isMobile ? 40 : 100; // Reduced from 60/180
+    const connectionDistance = 120; // Reduced from 150
+    const mouseDistance = 150; // Reduced from 200
 
     class Particle {
       x: number;
@@ -35,10 +35,10 @@ function ParticleCanvas() {
       constructor() {
         this.x = Math.random() * w;
         this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 1.5;
-        this.vy = (Math.random() - 0.5) * 1.5;
-        this.size = Math.random() * 2 + 1;
-        const colors = ['#3b82f6', '#60a5fa', '#ffffff', '#1e40af'];
+        this.vx = (Math.random() - 0.5) * 1.2;
+        this.vy = (Math.random() - 0.5) * 1.2;
+        this.size = Math.random() * 1.5 + 0.5;
+        const colors = ['#3b82f6', '#60a5fa', '#ffffff'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
@@ -51,22 +51,18 @@ function ParticleCanvas() {
 
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const distSq = dx * dx + dy * dy; // Avoid sqrt when possible
 
-        if (distance < mouseDistance) {
-          const forceDirectionX = dx / distance;
-          const forceDirectionY = dy / distance;
+        if (distSq < mouseDistance * mouseDistance) {
+          const distance = Math.sqrt(distSq);
           const force = (mouseDistance - distance) / mouseDistance;
-          const directionX = forceDirectionX * force * 3;
-          const directionY = forceDirectionY * force * 3;
-          this.vx -= directionX;
-          this.vy -= directionY;
-        } else {
-          if (this.vx > 2) this.vx *= 0.98;
-          if (this.vx < -2) this.vx *= 0.98;
-          if (this.vy > 2) this.vy *= 0.98;
-          if (this.vy < -2) this.vy *= 0.98;
+          this.vx -= (dx / distance) * force * 2;
+          this.vy -= (dy / distance) * force * 2;
         }
+
+        // Damping
+        this.vx *= 0.995;
+        this.vy *= 0.995;
       }
 
       draw() {
@@ -74,10 +70,7 @@ function ParticleCanvas() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = this.color;
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        ctx.fill(); // Removed shadowBlur for performance
       }
     }
 
@@ -89,26 +82,36 @@ function ParticleCanvas() {
     let animationFrameId: number;
 
     const animate = () => {
+      // Skip if not visible (saves CPU/GPU)
+      if (!isVisibleRef.current) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
+
       ctx.clearRect(0, 0, w, h);
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 0.3;
+
       for (let i = 0; i < particles.length; i++) {
-        let p1 = particles[i];
+        const p1 = particles[i];
         p1.update(mouseRef.current);
         p1.draw();
 
-        for (let j = i; j < particles.length; j++) {
-          let p2 = particles[j];
-          let dx = p1.x - p2.x;
-          let dy = p1.y - p2.y;
-          let distance = Math.sqrt(dx * dx + dy * dy);
+        // Only check every other particle for connections (50% less checks)
+        if (i % 2 === 0) {
+          for (let j = i + 1; j < particles.length; j += 2) {
+            const p2 = particles[j];
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const distSq = dx * dx + dy * dy;
 
-          if (distance < connectionDistance) {
-            ctx.beginPath();
-            let opacity = 1 - (distance / connectionDistance);
-            ctx.strokeStyle = `rgba(100, 150, 255, ${opacity * 0.5})`;
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
+            if (distSq < connectionDistance * connectionDistance) {
+              const opacity = 1 - (Math.sqrt(distSq) / connectionDistance);
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(100, 150, 255, ${opacity * 0.3})`;
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
           }
         }
       }
@@ -117,25 +120,35 @@ function ParticleCanvas() {
 
     animate();
 
+    // Intersection Observer to pause when not visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        isVisibleRef.current = entries[0].isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(canvas);
+
     const handleResize = () => {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-    }
+    };
     const handleMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       mouseRef.current = {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top
-      }
-    }
+      };
+    };
 
     window.addEventListener('resize', handleResize);
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
     };
   }, []);
 

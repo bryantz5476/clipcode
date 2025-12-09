@@ -78,6 +78,8 @@ function MagicCard({
   onAction: () => void;
   isLoading?: boolean;
 }) {
+  // Removed useShopifyProducts and useShopifyCart from here as they are no longer directly used for the basic plan button logic.
+
   return (
     <div className="relative h-full group">
       {/* MAGIC BORDER LAYER */}

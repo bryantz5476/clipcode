@@ -186,24 +186,14 @@ export function ServicesCarousel() {
           style={{
             animation: `scroll-infinite ${isMobile ? 17 : 30}s linear infinite`,
             animationPlayState: isPaused ? 'paused' : 'running',
-            willChange: 'transform' // Performance optimization
+            willChange: 'transform'
           }}
         >
-          {/* Quadruple items for safety */}
-          {[...services, ...services, ...services, ...services].map((service, index) => (
-            <motion.div
-              key={index}
-              className="pr-6"
-              animate={{ y: [0, -10, 0] }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: index * 0.2, // Staggered floating
-              }}
-            >
+          {/* Duplicate items for seamless infinite scroll */}
+          {[...services, ...services].map((service, index) => (
+            <div key={index} className="pr-6">
               <ServiceCard service={service} index={index} />
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
