@@ -13,7 +13,7 @@ export function Footer() {
             </a>
             <p className="text-gray-400 max-w-md mb-6 leading-relaxed">
               Desarrollo web profesional para negocios que buscan destacar.
-              Desde presencia básica hasta e-commerce completo con Shopify.
+              Desde presencia básica hasta e-commerce completo.
             </p>
             <div className="flex gap-4">
               {[
@@ -64,7 +64,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail className="w-4 h-4 text-blue-400" />
-                <span>hola@clipcode.es</span>
+                <span>clipcode.msg@gmail.com</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Phone className="w-4 h-4 text-blue-400" />

@@ -123,6 +123,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
 // Add detailed logic for responsive speed
 export function ServicesCarousel() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -131,8 +132,17 @@ export function ServicesCarousel() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Handle click outside to resume animation (for "click elsewhere" rule)
+  useEffect(() => {
+    const handleGlobalClick = () => setIsPaused(false);
+    if (isPaused) {
+      window.addEventListener('click', handleGlobalClick);
+    }
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, [isPaused]);
+
   return (
-    <section className="py-20 bg-black overflow-hidden" data-testid="section-services">
+    <section id="section-services" className="py-20 bg-black overflow-hidden" data-testid="section-services">
       <div className="max-w-7xl mx-auto px-6 mb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -154,18 +164,29 @@ export function ServicesCarousel() {
         <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
 
-        <motion.div
-          key={isMobile ? 'mobile' : 'desktop'}
-          className="flex py-4 w-max"
-          initial={{ x: '0%' }}
-          animate={{ x: '-50%' }}
-          transition={{
-            x: {
-              repeat: Infinity,
-              repeatType: 'loop',
-              duration: isMobile ? 5 : 30, // 5s mobile (Ultra Fast), 30s desktop
-              ease: 'linear',
-            },
+        {/* Inject dynamic styles for keyframes */}
+        <style>{`
+          @keyframes scroll-infinite {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .paused {
+            animation-play-state: paused !important;
+          }
+        `}</style>
+
+        <div
+          className="flex py-4 w-max hover:cursor-pointer"
+          onMouseEnter={() => !isMobile && setIsPaused(true)}
+          onMouseLeave={() => !isMobile && setIsPaused(false)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsPaused(true);
+          }}
+          style={{
+            animation: `scroll-infinite ${isMobile ? 17 : 30}s linear infinite`,
+            animationPlayState: isPaused ? 'paused' : 'running',
+            willChange: 'transform' // Performance optimization
           }}
         >
           {/* Quadruple items for safety */}
@@ -184,7 +205,7 @@ export function ServicesCarousel() {
               <ServiceCard service={service} index={index} />
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

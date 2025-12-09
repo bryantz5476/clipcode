@@ -104,7 +104,7 @@ export const FinalCTA = forwardRef<HTMLElement, { onScrollToPlans: () => void }>
           <Button
             size="lg"
             variant="outline"
-            onClick={onScrollToPlans}
+            onClick={() => window.open('https://wa.me/34607328443?text=%C2%A1Hola!%20Quiero%20dar%20el%20paso%20al%20futuro', '_blank')}
             className="relative bg-transparent border border-blue-500/50 text-white px-8 py-6 text-lg rounded-lg tracking-wide backdrop-blur-sm transition-all duration-300 overflow-hidden group hover:border-white hover:text-[#020617]"
             data-testid="button-cta-contactar"
           >

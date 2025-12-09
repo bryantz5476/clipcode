@@ -57,7 +57,7 @@ export function Gallery() {
   const [selectedImage, setSelectedImage] = useState<typeof galleryImages[0] | null>(null);
 
   return (
-    <section className="py-24 bg-gradient-to-b from-black to-navy-950" data-testid="section-gallery">
+    <section id="section-gallery" className="py-24 bg-gradient-to-b from-black to-navy-950" data-testid="section-gallery">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

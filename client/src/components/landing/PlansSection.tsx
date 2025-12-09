@@ -2,7 +2,9 @@ import { forwardRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowRight, Sparkles, Loader2, MessageCircle } from 'lucide-react'; // Añadí icono de MessageCircle
+import { ShopifyButton } from '@/components/ShopifyButton';
+import { Check, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { useShopifyProducts, useShopifyCart } from '@/hooks/use-shopify';
 
 const plans = [
@@ -22,7 +24,7 @@ const plans = [
       'Conexión con Redes Sociales'
     ],
     highlighted: false,
-    cta: 'Comprar Ahora', // CTA directo
+    cta: 'Empezar mi Proyecto Ya', // CTA directo
     isShopifyAction: true, // ESTE AHORA ES EL QUE SE COMPRA DIRECTO
   },
   {
@@ -41,7 +43,7 @@ const plans = [
       'Hosting de Alta Velocidad'
     ],
     highlighted: true,
-    cta: 'Solicitar Consultoría', // CTA de contacto
+    cta: 'Consultar Disponibilidad', // CTA de contacto WhatsApp
     link: 'https://wa.me/34607328443?text=Hola,%20me%20interesa%20el%20Plan%20Profesional%20de%20490%E2%82%AC.%20%C2%BFMe%20puedes%20dar%20m%C3%A1s%20informaci%C3%B3n%3F'
   },
   {
@@ -60,7 +62,7 @@ const plans = [
       'Hosting de Alta Velocidad'
     ],
     highlighted: false,
-    cta: 'Agendar Reunión', // CTA de contacto High Ticket
+    cta: 'Hablar sobre mi Tienda', // CTA de contacto High Ticket WhatsApp
     link: 'https://wa.me/34607328443?text=Hola,%20estoy%20interesado%20en%20el%20Plan%20E-commerce%20de%20990%E2%82%AC'
   }
 ];
@@ -128,27 +130,44 @@ function MagicCard({
 
         {/* CTA BUTTON */}
         <div className="mb-8">
-          <Button
-            onClick={onAction}
-            disabled={isLoading && plan.isShopifyAction}
-            className={`w-full py-6 rounded-xl transition-all duration-300 ${plan.highlighted
-              ? 'bg-white text-navy-950 font-bold hover:bg-gray-100 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] border-transparent'
-              : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
-              }`}
-          >
-            {isLoading && plan.isShopifyAction ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <>
+          {plan.id === 'basico' ? (
+            <div className="w-full relative">
+              {/* Hidden Shopify button - functional but invisible */}
+              <div className="opacity-0 absolute inset-0 z-10 pointer-events-auto">
+                <ShopifyButton />
+              </div>
+              {/* Visible styled button that matches the others */}
+              <Button
+                onClick={() => {
+                  // Trigger click on the hidden Shopify button
+                  const shopifyBtn = document.querySelector('#product-component-1765191380487 button') as HTMLButtonElement;
+                  if (shopifyBtn) shopifyBtn.click();
+                }}
+                className="w-full py-6 rounded-xl transition-all duration-300 bg-white/5 hover:bg-white/10 text-white border border-white/10 relative z-20 pointer-events-auto"
+              >
                 {plan.cta}
-                {plan.isShopifyAction ? (
-                  <ArrowRight className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
-                ) : (
-                  <MessageCircle className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
-                )}
-              </>
-            )}
-          </Button>
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 opacity-50 group-hover:opacity-100 group-hover:translate-x-1" />
+              </Button>
+            </div>
+          ) : (
+            <Button
+              onClick={onAction}
+              disabled={isLoading && plan.isShopifyAction}
+              className={`group w-full py-6 rounded-xl transition-all duration-300 ${plan.highlighted
+                ? 'bg-white text-navy-950 font-bold hover:bg-gray-100 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] border-transparent'
+                : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
+                }`}
+            >
+              {isLoading && plan.isShopifyAction ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  {plan.cta}
+                  <FaWhatsapp className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 group-hover:translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
+                </>
+              )}
+            </Button>
+          )}
         </div>
 
         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />

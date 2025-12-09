@@ -30,37 +30,37 @@ export const ShopifyButton = () => {
                                 "options": false
                             },
                             "text": {
-                                "button": "shopiCONTRATAR AHORA"
+                                "button": "Empezar mi Proyecto Ya"
                             },
                             "styles": {
                                 "product": {
                                     "@media (min-width: 601px)": {
                                         "max-width": "100%",
                                         "margin-left": "0",
-                                        "margin-bottom": "0px"
-                                    }
+                                        "margin-bottom": "0px",
+                                        "margin-top": "0px"
+                                    },
+                                    "width": "100%",
+                                    "max-width": "100%",
+                                    "margin-top": "0px !important",
+                                    "margin-bottom": "0px !important"
                                 },
                                 "button": {
-                                    "font-family": "System-ui, sans-serif",
-                                    "font-weight": "600",
-                                    "font-size": "15px",
-                                    "padding": "20px 40px",
-                                    // Gradient Sweep Logic
-                                    "background-image": "linear-gradient(to right, #2563EB 50%, #ffffff 50%)",
-                                    "background-size": "200% 100%",
-                                    "background-position": "100% 0", // Start at White (Right side)
-                                    "color": "#000000",            // Start Black Text
+                                    "background-color": "rgba(255, 255, 255, 0.05)",
+                                    "color": "#ffffff",
                                     ":hover": {
-                                        "background-position": "0% 0", // Slide to Blue (Left side)
-                                        "color": "#ffffff",            // Flip to White Text
-                                        "box-shadow": "0 10px 25px -5px rgba(37, 99, 235, 0.4)"
+                                        "background-color": "rgba(255, 255, 255, 0.1)"
                                     },
                                     "border-radius": "12px",
                                     "width": "100%",
-                                    "transition": "background-position 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.4s ease, box-shadow 0.4s ease",
-                                    "letter-spacing": "1px",
-                                    "text-transform": "uppercase",
-                                    "box-shadow": "0 10px 20px -5px rgba(0, 0, 0, 0.2)"
+                                    "padding": "24px 0",
+                                    "border": "1px solid rgba(255, 255, 255, 0.1)",
+                                    "transition": "all 0.3s ease",
+                                    "font-family": "Outfit, sans-serif",
+                                    "font-weight": "600",
+                                    "font-size": "16px",
+                                    "letter-spacing": "0px",
+                                    "text-transform": "none"
                                 }
                             }
                         },
@@ -106,5 +106,44 @@ export const ShopifyButton = () => {
 
     }, []);
 
-    return <div id='product-component-1765191380487'></div>;
+    return (
+        <>
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                #product-component-1765191380487 {
+                    width: 100% !important;
+                    display: block !important;
+                }
+                #product-component-1765191380487 iframe {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    display: block !important;
+                    min-height: 0 !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                }
+                .shopify-buy__product {
+                    margin: 0 !important;
+                    display: block !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    text-align: center !important; 
+                }
+                .shopify-buy__product > div {
+                    max-width: 100% !important;
+                }
+                .shopify-buy__btn-wrapper {
+                     margin: 0 !important;
+                     padding: 0 !important;
+                }
+                .shopify-buy__btn {
+                    width: 100% !important;
+                    margin: 0 !important;
+                    display: block !important;
+                }
+                `
+            }} />
+            <div id='product-component-1765191380487'></div>
+        </>
+    );
 };

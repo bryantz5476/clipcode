@@ -339,8 +339,8 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
               >
                 <div className="absolute inset-0 bg-white transform -translate-x-full transition-transform duration-300 ease-out group-hover:translate-x-0" />
                 <span className="relative flex items-center z-10">
-                  <MousePointer2 className="mr-2 w-4 h-4" />
                   AGENDAR DEMO
+                  <MousePointer2 className="ml-2 w-4 h-4" />
                 </span>
               </Button>
             </motion.div>
@@ -358,7 +358,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
                   { name: 'NexTech', src: '/logo-nextech.png' },
                   { name: 'Orbital', src: '/logo-orbital.png' },
                   { name: 'Vertex', src: '/logo-vertex.png' },
-                  { name: 'Angel', src: '/angel.webp' }
+                  { name: 'Angel', src: '/angel.png' }
                 ].map((logo, i) => (
                   <div
                     key={i}
