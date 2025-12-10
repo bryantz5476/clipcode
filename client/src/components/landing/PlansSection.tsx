@@ -2,7 +2,7 @@ import { forwardRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShopifyButton } from '@/components/ShopifyButton';
+import { ShopifyButton } from '@/components/ShopifyButton'; // Recuperado
 import { Check, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useShopifyProducts, useShopifyCart } from '@/hooks/use-shopify';
@@ -10,22 +10,22 @@ import { useShopifyProducts, useShopifyCart } from '@/hooks/use-shopify';
 const plans = [
   {
     id: 'basico',
-    name: 'Plan Básico',
-    price: '250',
+    name: 'Plan Lanzamiento',
+    price: '350',
     description: 'Ideal para iniciar tu presencia digital con lo esencial.',
     features: [
-      'Estructura Corporativa de 3 secciones',
-      'Web One-Page',
+      'Diseño One-Page de Alto Impacto',
       'Dominio incluido (1 año)',
       'Tecnología "Instant Load"',
       'Integración Google Maps',
       'Alojamiento Cloud Seguro (HTTPS)',
       'Hosting de Alta Velocidad',
-      'Conexión con Redes Sociales'
+      'Conexión con Redes Sociales',
+      'Soporte Prioritario de 30 días'
     ],
     highlighted: false,
-    cta: 'Empezar mi Proyecto Ya', // CTA directo
-    isShopifyAction: true, // ESTE AHORA ES EL QUE SE COMPRA DIRECTO
+    cta: 'Empezar mi Proyecto Ya',
+    isShopifyAction: true,
   },
   {
     id: 'profesional',
@@ -33,8 +33,8 @@ const plans = [
     price: '490',
     description: 'La opción preferida. Escala tu negocio con reservas automáticas.',
     features: [
-      'Todo lo del Plan Básico +',
-      'Diseño Moderno y Atractivo',
+      'Todo lo del Plan Lanzamiento +',
+      'Diseño Expandido Multi-Sección',
       'Estructura Corporativa de 5 secciones',
       'Integración de Sistema de Citas',
       'SEO Local Estratégico',
@@ -43,7 +43,7 @@ const plans = [
       'Hosting de Alta Velocidad'
     ],
     highlighted: true,
-    cta: 'Consultar Disponibilidad', // CTA de contacto WhatsApp
+    cta: 'Consultar Disponibilidad',
     link: 'https://wa.me/34607328443?text=Hola,%20me%20interesa%20el%20Plan%20Profesional%20de%20490%E2%82%AC.%20%C2%BFMe%20puedes%20dar%20m%C3%A1s%20informaci%C3%B3n%3F'
   },
   {
@@ -62,7 +62,7 @@ const plans = [
       'Hosting de Alta Velocidad'
     ],
     highlighted: false,
-    cta: 'Hablar sobre mi Tienda', // CTA de contacto High Ticket WhatsApp
+    cta: 'Hablar sobre mi Tienda',
     link: 'https://wa.me/34607328443?text=Hola,%20estoy%20interesado%20en%20el%20Plan%20E-commerce%20de%20990%E2%82%AC'
   }
 ];
@@ -78,7 +78,6 @@ function MagicCard({
   onAction: () => void;
   isLoading?: boolean;
 }) {
-  // Removed useShopifyProducts and useShopifyCart from here as they are no longer directly used for the basic plan button logic.
 
   return (
     <div className="relative h-full group">
@@ -129,21 +128,23 @@ function MagicCard({
             {plan.description}
           </p>
         </div>
-
         {/* CTA BUTTON */}
         <div className="mb-8">
           {plan.id === 'basico' ? (
             <div className="w-full relative">
-              {/* Hidden Shopify button - functional but invisible */}
-              <div className="opacity-0 absolute inset-0 z-10 pointer-events-auto">
+
+              {/* ✅ CAMBIO CLAVE: 'pointer-events-none' 
+                  Esto mantiene el botón oculto y en su sitio, 
+                  pero deja pasar el clic hacia abajo. */}
+              <div className="opacity-0 absolute inset-0 z-10 pointer-events-none">
                 <ShopifyButton />
               </div>
-              {/* Visible styled button that matches the others */}
+
+              {/* Visible styled button */}
               <Button
                 onClick={() => {
-                  // Trigger click on the hidden Shopify button
-                  const shopifyBtn = document.querySelector('#product-component-1765191380487 button') as HTMLButtonElement;
-                  if (shopifyBtn) shopifyBtn.click();
+                  // ✅ REDIRECCIÓN FORZADA AL PAGO
+                  window.location.href = 'https://clip-code.myshopify.com/cart/52232987050250:1';
                 }}
                 className="w-full py-6 rounded-xl transition-all duration-300 bg-white/5 hover:bg-white/10 text-white border border-white/10 relative z-20 pointer-events-auto"
               >
@@ -194,9 +195,8 @@ export const PlansSection = forwardRef<HTMLElement>((props, ref) => {
   const { products } = useShopifyProducts();
   const { addToCart, loading: cartLoading } = useShopifyCart();
 
-  // 🔍 BUSCAR EL ID DEL PLAN BÁSICO (Ahora es este el que se compra)
+  // BUSQUEDA ORIGINAL DE VARIANTE (Se mantiene para no romper nada, aunque usemos ID directo)
   const basicPlanVariantId = useMemo(() => {
-    // Intenta buscar por título "Basico" o "Básico"
     const productByTitle = products.find(p =>
       p.title.toLowerCase().includes('basico') ||
       p.title.toLowerCase().includes('básico') ||
@@ -207,7 +207,6 @@ export const PlansSection = forwardRef<HTMLElement>((props, ref) => {
       return productByTitle.variants[0].id;
     }
 
-    // Fallback: Si no lo encuentra, usa el primer producto disponible como seguridad
     if (products.length > 0 && products[0].variants.length > 0) {
       return products[0].variants[0].id;
     }
@@ -215,18 +214,16 @@ export const PlansSection = forwardRef<HTMLElement>((props, ref) => {
     return null;
   }, [products]);
 
-  // MANEJADOR UNIFICADO DE ACCIONES
   const handleAction = (plan: typeof plans[0]) => {
     if (plan.isShopifyAction) {
-      // LOGICA SHOPIFY (Plan Básico)
+      // LOGICA ORIGINAL MANTENIDA (Aunque el botón 'basico' la ignora ahora)
       if (basicPlanVariantId) {
         addToCart(basicPlanVariantId);
       } else {
-        console.warn('Variante de Plan Básico no encontrada. Redirigiendo a WhatsApp.');
-        window.open('https://wa.me/34607328443?text=Hola,%20quiero%20comprar%20el%20Plan%20B%C3%A1sico%20pero%20el%20bot%C3%B3n%20fall%C3%B3', '_blank');
+        console.warn('Variante de Plan Lanzamiento no encontrada.');
+        window.open('https://wa.me/34607328443?text=Error%20al%20comprar', '_blank');
       }
     } else if (plan.link) {
-      // LOGICA WHATSAPP (Plan Pro y Ecommerce)
       window.open(plan.link, '_blank');
     }
   };

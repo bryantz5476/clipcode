@@ -76,13 +76,18 @@ export const ShopifyButton = () => {
                                     "backdrop-filter": "blur(20px)",
                                     "-webkit-backdrop-filter": "blur(20px)",
                                     "color": "#f8fafc",
-                                    "border-left": "1px solid rgba(255, 255, 255, 0.08)"
+                                    "border-left": "1px solid rgba(255, 255, 255, 0.08)",
+                                    "display": "flex",
+                                    "flex-direction": "column",
+                                    "height": "100%",
+                                    "max-height": "100vh"
                                 },
                                 "header": {
                                     "background-color": "transparent",
                                     "color": "#f8fafc",
                                     "border-bottom": "1px solid rgba(255, 255, 255, 0.06)",
-                                    "padding": "28px 24px"
+                                    "padding": "28px 24px",
+                                    "flex": "0 0 auto"
                                 },
                                 "title": {
                                     "color": "#e2e8f0",
@@ -92,7 +97,11 @@ export const ShopifyButton = () => {
                                 },
                                 "lineItems": {
                                     "background-color": "transparent",
-                                    "padding-top": "24px"
+                                    "padding": "24px",
+                                    "flex": "1 1 auto",
+                                    "overflow-y": "auto",
+                                    "min-height": "0",
+                                    "-webkit-overflow-scrolling": "touch"
                                 },
                                 "subtotalText": {
                                     "color": "#94a3b8",
@@ -151,14 +160,18 @@ export const ShopifyButton = () => {
                                 },
                                 "footer": {
                                     "background-color": "transparent",
-                                    "border-top": "1px solid rgba(255, 255, 255, 0.06)",
-                                    "padding": "32px 24px"
+                                    "border-top": "none",
+                                    "padding": "0",
+                                    "margin-top": "auto",
+                                    "flex": "0 0 auto",
+                                    "width": "100%"
                                 },
                                 "lineItem": {
                                     "background-color": "transparent",
                                     "border-bottom": "1px solid rgba(255, 255, 255, 0.04)",
                                     "padding-bottom": "16px",
-                                    "padding-top": "16px"
+                                    "padding-top": "16px",
+                                    "margin-bottom": "0"
                                 },
                                 "itemTitle": {
                                     "color": "#f1f5f9",
@@ -183,44 +196,26 @@ export const ShopifyButton = () => {
                             },
                             "templates": {
                                 "footer": `
-                                    <div style="display: flex; flex-direction: column; flex: 1; padding: 20px 24px;">
-                                        <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; padding: 16px 0;">
-                                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                                <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(0,180,216,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                                    <svg width="20" height="20" fill="none" stroke="#00B4D8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                                </div>
-                                                <div>
-                                                    <p style="color: #f1f5f9; font-weight: 500; font-size: 14px; margin: 0;">Entrega Flash</p>
-                                                    <p style="color: #64748b; font-size: 12px; margin: 4px 0 0 0;">Proyecto listo en 48h</p>
-                                                </div>
+                                    <div style="margin-top: 24px; padding: 24px; border-top: 1px solid rgba(255,255,255,0.08);">
+                                        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <svg width="16" height="16" fill="none" stroke="#00B4D8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                                <span style="color: #e2e8f0; font-size: 13px;"><strong>Entrega Flash</strong> · 48h</span>
                                             </div>
-                                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                                <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(0,180,216,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                                    <svg width="20" height="20" fill="none" stroke="#00B4D8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                                </div>
-                                                <div>
-                                                    <p style="color: #f1f5f9; font-weight: 500; font-size: 14px; margin: 0;">Pago Blindado</p>
-                                                    <p style="color: #64748b; font-size: 12px; margin: 4px 0 0 0;">Seguridad SSL 256-bit</p>
-                                                </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <svg width="16" height="16" fill="none" stroke="#00B4D8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                                <span style="color: #e2e8f0; font-size: 13px;"><strong>Pago Seguro</strong> · SSL</span>
                                             </div>
-                                            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                                <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(0,180,216,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                                    <svg width="20" height="20" fill="none" stroke="#00B4D8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                                                </div>
-                                                <div>
-                                                    <p style="color: #f1f5f9; font-weight: 500; font-size: 14px; margin: 0;">Soporte Directo</p>
-                                                    <p style="color: #64748b; font-size: 12px; margin: 4px 0 0 0;">Hablas con humanos</p>
-                                                </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <svg width="16" height="16" fill="none" stroke="#00B4D8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                                <span style="color: #e2e8f0; font-size: 13px;"><strong>Soporte</strong> · Humanos</span>
                                             </div>
-                                            <p style="color: #64748b; font-size: 11px; margin: 8px 0 0 0;">ℹ Los datos de tu proyecto se solicitarán en el siguiente paso de forma segura.</p>
                                         </div>
-                                        <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
-                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                                <span style="color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 500;">{{data.text.total}}</span>
-                                                <span style="color: #f1f5f9; font-size: 24px; font-weight: 600;">{{data.formattedTotal}}</span>
-                                            </div>
-                                            <button class="{{data.classes.cart.button}}" type="button">{{data.text.button}}</button>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                            <span style="color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 500;">{{data.text.total}}</span>
+                                            <span style="color: #f1f5f9; font-size: 24px; font-weight: 600;">{{data.formattedTotal}}</span>
                                         </div>
+                                        <button class="{{data.classes.cart.button}}" type="button">{{data.text.button}}</button>
                                     </div>
                                 `
                             }

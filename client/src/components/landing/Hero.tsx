@@ -386,7 +386,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
                 <div className="flex text-yellow-500 mb-1">
                   {'★★★★★'.split('').map(s => <span key={s}>{s}</span>)}
                 </div>
-                <p>Confían +150 Empresas</p>
+                <p>Confían +100 Empresas</p>
               </div>
             </motion.div>
           </div>

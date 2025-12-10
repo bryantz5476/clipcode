@@ -25,7 +25,7 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>;
 
 const plans = [
-  { value: 'basico', label: 'Plan Básico - 499€' },
+  { value: 'basico', label: 'Plan Lanzamiento - 499€' },
   { value: 'profesional', label: 'Plan Profesional - 999€' },
   { value: 'ecommerce', label: 'Plan E-commerce - 1.999€' },
 ];
@@ -186,7 +186,7 @@ export function ContactForm() {
                           <FormLabel className="text-white">Plan de interés</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger 
+                              <SelectTrigger
                                 className="bg-navy-800/50 border-blue-500/20 text-white"
                                 data-testid="select-contact-plan"
                               >
@@ -195,8 +195,8 @@ export function ContactForm() {
                             </FormControl>
                             <SelectContent className="bg-navy-900 border-blue-500/20">
                               {plans.map((plan) => (
-                                <SelectItem 
-                                  key={plan.value} 
+                                <SelectItem
+                                  key={plan.value}
                                   value={plan.value}
                                   className="text-white hover:bg-blue-500/10"
                                   data-testid={`option-plan-${plan.value}`}
