@@ -1,11 +1,10 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShopifyButton } from '@/components/ShopifyButton'; // Recuperado
 import { Check, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
-import { useShopifyProducts, useShopifyCart } from '@/hooks/use-shopify';
+import { useShopifyProducts } from '@/hooks/use-shopify';
 
 const plans = [
   {
@@ -25,7 +24,6 @@ const plans = [
     ],
     highlighted: false,
     cta: 'Empezar mi Proyecto Ya',
-    isShopifyAction: true,
   },
   {
     id: 'profesional',
@@ -70,13 +68,11 @@ const plans = [
 function MagicCard({
   plan,
   index,
-  onAction,
-  isLoading
+  onAction
 }: {
   plan: typeof plans[0];
   index: number;
   onAction: () => void;
-  isLoading?: boolean;
 }) {
 
   return (
@@ -85,16 +81,17 @@ function MagicCard({
       <div className={`absolute -inset-[2px] rounded-3xl overflow-hidden ${plan.highlighted ? 'opacity-100' : 'opacity-100'}`}>
         <motion.div
           className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] opacity-40 via-blue-500 to-transparent w-[300%] h-[300%] left-[-100%] top-[-100%]"
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 8, // Slower rotation is less distracting and cheaper
+            repeat: Infinity,
+            ease: "linear"
+          }}
           style={{
+            willChange: 'transform', // Hint to browser
             backgroundImage: plan.highlighted
               ? 'conic-gradient(from 0deg, transparent 0 320deg, #3b82f6 340deg, #2563EB 360deg)'
               : 'conic-gradient(from 0deg, transparent 0 300deg, #94a3b8 360deg)'
-          }}
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "linear"
           }}
         />
       </div>
@@ -130,47 +127,20 @@ function MagicCard({
         </div>
         {/* CTA BUTTON */}
         <div className="mb-8">
-          {plan.id === 'basico' ? (
-            <div className="w-full relative">
-
-              {/* ✅ CAMBIO CLAVE: 'pointer-events-none' 
-                  Esto mantiene el botón oculto y en su sitio, 
-                  pero deja pasar el clic hacia abajo. */}
-              <div className="opacity-0 absolute inset-0 z-10 pointer-events-none">
-                <ShopifyButton />
-              </div>
-
-              {/* Visible styled button */}
-              <Button
-                onClick={() => {
-                  // ✅ REDIRECCIÓN FORZADA AL PAGO
-                  window.location.href = 'https://clip-code.myshopify.com/cart/52232987050250:1';
-                }}
-                className="w-full py-6 rounded-xl transition-all duration-300 bg-white/5 hover:bg-white/10 text-white border border-white/10 relative z-20 pointer-events-auto"
-              >
-                {plan.cta}
-                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 opacity-50 group-hover:opacity-100 group-hover:translate-x-1" />
-              </Button>
-            </div>
-          ) : (
-            <Button
-              onClick={onAction}
-              disabled={isLoading && plan.isShopifyAction}
-              className={`group w-full py-6 rounded-xl transition-all duration-300 ${plan.highlighted
-                ? 'bg-white text-navy-950 font-bold hover:bg-gray-100 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] border-transparent'
-                : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
-                }`}
-            >
-              {isLoading && plan.isShopifyAction ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  {plan.cta}
-                  <FaWhatsapp className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 group-hover:translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
-                </>
-              )}
-            </Button>
-          )}
+          <Button
+            onClick={onAction}
+            className={`group w-full py-6 rounded-xl transition-all duration-300 ${plan.highlighted
+              ? 'bg-white text-navy-950 font-bold hover:bg-gray-100 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] border-transparent'
+              : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
+              }`}
+          >
+            {plan.cta}
+            {plan.id === 'basico' ? (
+              <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 opacity-50 group-hover:opacity-100 group-hover:translate-x-1" />
+            ) : (
+              <FaWhatsapp className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 group-hover:translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
+            )}
+          </Button>
         </div>
 
         <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
@@ -193,36 +163,10 @@ function MagicCard({
 
 export const PlansSection = forwardRef<HTMLElement>((props, ref) => {
   const { products } = useShopifyProducts();
-  const { addToCart, loading: cartLoading } = useShopifyCart();
-
-  // BUSQUEDA ORIGINAL DE VARIANTE (Se mantiene para no romper nada, aunque usemos ID directo)
-  const basicPlanVariantId = useMemo(() => {
-    const productByTitle = products.find(p =>
-      p.title.toLowerCase().includes('basico') ||
-      p.title.toLowerCase().includes('básico') ||
-      p.title.toLowerCase().includes('plan 1')
-    );
-
-    if (productByTitle && productByTitle.variants.length > 0) {
-      return productByTitle.variants[0].id;
-    }
-
-    if (products.length > 0 && products[0].variants.length > 0) {
-      return products[0].variants[0].id;
-    }
-
-    return null;
-  }, [products]);
 
   const handleAction = (plan: typeof plans[0]) => {
-    if (plan.isShopifyAction) {
-      // LOGICA ORIGINAL MANTENIDA (Aunque el botón 'basico' la ignora ahora)
-      if (basicPlanVariantId) {
-        addToCart(basicPlanVariantId);
-      } else {
-        console.warn('Variante de Plan Lanzamiento no encontrada.');
-        window.open('https://wa.me/34607328443?text=Error%20al%20comprar', '_blank');
-      }
+    if (plan.id === 'basico') {
+      window.location.href = 'https://clip-code.myshopify.com/cart/52232987050250:1';
     } else if (plan.link) {
       window.open(plan.link, '_blank');
     }
@@ -253,7 +197,6 @@ export const PlansSection = forwardRef<HTMLElement>((props, ref) => {
               plan={plan}
               index={index}
               onAction={() => handleAction(plan)}
-              isLoading={plan.isShopifyAction && cartLoading}
             />
           ))}
         </div>

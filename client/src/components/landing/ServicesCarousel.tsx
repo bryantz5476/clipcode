@@ -66,7 +66,9 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
   const rotateY = useSpring(useTransform(x, [-100, 100], [-10, 10]), { stiffness: 300, damping: 30 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    // Disable 3D tilt on mobile for performance
+    if (window.innerWidth < 768 || !ref.current) return;
+
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;

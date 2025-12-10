@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Menu, X } from 'lucide-react';
-import { useShopifyCart } from '@/hooks/use-shopify';
+import { Menu, X } from 'lucide-react';
 
 export function Header({ onScrollToPlans }: { onScrollToPlans: () => void }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { itemCount, openCart, isConnected } = useShopifyCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,22 +69,7 @@ export function Header({ onScrollToPlans }: { onScrollToPlans: () => void }) {
             </nav>
 
             <div className="flex items-center gap-4">
-              {isConnected && (
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={openCart}
-                  className="relative text-white hover:bg-white/10 rounded-full"
-                  data-testid="button-cart"
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  {itemCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">
-                      {itemCount}
-                    </span>
-                  )}
-                </Button>
-              )}
+
 
               <Button
                 onClick={onScrollToPlans}

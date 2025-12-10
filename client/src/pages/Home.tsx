@@ -13,7 +13,6 @@ const Gallery = lazy(() => import('@/components/landing/Gallery').then(module =>
 const Testimonials = lazy(() => import('@/components/landing/Testimonials').then(module => ({ default: module.Testimonials })));
 const FinalCTA = lazy(() => import('@/components/landing/FinalCTA').then(module => ({ default: module.FinalCTA })));
 const Footer = lazy(() => import('@/components/landing/Footer').then(module => ({ default: module.Footer })));
-const Cart = lazy(() => import('@/components/landing/Cart').then(module => ({ default: module.Cart })));
 
 export default function Home() {
   // Referencias para el Scroll Suave
@@ -79,9 +78,6 @@ export default function Home() {
 
       {/* 10. Footer */}
       <Suspense><Footer /></Suspense>
-
-      {/* 11. EL CARRITO (Overlay) */}
-      <Suspense><Cart /></Suspense>
 
     </div>
   );

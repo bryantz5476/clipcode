@@ -9,7 +9,8 @@ const galleryImages = [
     category: 'Tienda Online',
     span: 'col-span-2 row-span-2',
     gradient: 'from-blue-600/20 to-navy-900',
-    description: 'Plataforma de ventas completa con gestión de inventario automatizada.'
+    description: 'Plataforma de ventas completa con gestión de inventario automatizada.',
+    src: '/e-commerce.webp'
   },
   {
     id: 2,
@@ -17,7 +18,7 @@ const galleryImages = [
     category: 'Servicios',
     span: 'col-span-1 row-span-1',
     gradient: 'from-blue-500/20 to-navy-950',
-    description: 'Página de alta conversión diseñada para captar leads.'
+    description: 'Página de alta conversión diseñada para captar leads.',
   },
   {
     id: 3,
@@ -59,6 +60,7 @@ export function Gallery() {
   return (
     <section id="section-gallery" className="py-24 bg-gradient-to-b from-black to-navy-950" data-testid="section-gallery">
       <div className="max-w-7xl mx-auto px-6">
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -76,6 +78,7 @@ export function Gallery() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
           {galleryImages.map((image, index) => (
+
             <motion.div
               key={image.id}
               layoutId={`card-${image.id}`}
@@ -85,72 +88,86 @@ export function Gallery() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               whileHover={{ scale: 1.02 }}
-              className={`relative overflow-hidden rounded-lg cursor-pointer group ${image.span}`}
+              className={`relative cursor-pointer group ${image.span}`}
+              style={{
+                borderRadius: '0.5rem',
+                clipPath: 'inset(0 round 0.5rem)',
+                overflow: 'hidden', // 🔥 evita fuga visual y elimina flickering
+                willChange: 'transform',
+              }}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${image.gradient}`} />
 
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(59,130,246,0.1)_0%,_transparent_70%)]" />
+              {image.src ? (
+                <img
+                  src={image.src}
+                  alt={image.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 z-0"
+                />
+              ) : (
+                <div className={`absolute inset-0 bg-gradient-to-br ${image.gradient} z-0`} />
+              )}
 
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-4 left-4 right-4 h-3 bg-white/10 rounded-full" />
-                <div className="absolute top-10 left-4 w-24 h-2 bg-white/10 rounded-full" />
-                <div className="absolute top-16 left-4 right-8 h-20 bg-white/5 rounded-lg" />
-                <div className="absolute bottom-4 left-4 w-16 h-8 bg-blue-500/20 rounded-md" />
-              </div>
-
+              {/* 🔥 Overlay único sin parpadeo */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10 pointer-events-none"
+                initial={{ opacity: 0.6 }}
+                whileHover={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
               />
 
-              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+              {/* Textos */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 
+                transition-transform duration-300 z-20">
                 <span className="text-blue-400 text-xs font-medium uppercase tracking-wider">
                   {image.category}
                 </span>
                 <h3 className="text-white font-semibold text-lg">{image.title}</h3>
               </div>
 
-              <div className="absolute inset-0 border border-blue-500/0 group-hover:border-blue-500/30 rounded-lg transition-colors duration-300" />
+              {/* Borde hover */}
+              <div className="absolute inset-0 border border-blue-500/0 group-hover:border-blue-500/30 
+                transition-colors duration-300 z-30 pointer-events-none"
+                style={{ borderRadius: '0.5rem' }}
+              />
             </motion.div>
           ))}
         </div>
 
+        {/* MODAL */}
         <AnimatePresence>
           {selectedImage && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
               onClick={() => setSelectedImage(null)}
             >
               <motion.div
-                layoutId={`card-${selectedImage.id}`}
-                className="relative w-full max-w-3xl aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="relative w-full max-w-5xl aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Background Visuals */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${selectedImage.gradient}`} />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(59,130,246,0.2)_0%,_transparent_70%)]" />
+                {selectedImage.src ? (
+                  <img src={selectedImage.src} alt={selectedImage.title} className="absolute inset-0 w-full h-full object-cover" />
+                ) : (
+                  <div className={`absolute inset-0 bg-gradient-to-br ${selectedImage.gradient}`} />
+                )}
 
-                {/* Abstract Content */}
-                <div className="absolute inset-0 opacity-30 flex flex-col justify-center px-12">
-                  <div className="w-3/4 h-4 bg-white/10 rounded-full mb-4" />
-                  <div className="w-1/2 h-4 bg-white/10 rounded-full mb-4" />
-                  <div className="w-full h-32 bg-white/5 rounded-xl mb-4" />
-                  <div className="flex gap-4">
-                    <div className="w-24 h-8 bg-blue-500/20 rounded-md" />
-                    <div className="w-24 h-8 bg-white/5 rounded-md" />
-                  </div>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 pointer-events-none" />
 
                 <button
-                  className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors z-20"
+                  className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors z-50"
                   onClick={() => setSelectedImage(null)}
                 >
                   <X className="w-6 h-6" />
                 </button>
 
-                <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
+                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
                   <motion.span
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -170,7 +187,7 @@ export function Gallery() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="text-gray-300 text-lg max-w-xl"
+                    className="text-gray-200 text-lg max-w-xl"
                   >
                     {selectedImage.description}
                   </motion.p>
@@ -179,6 +196,7 @@ export function Gallery() {
             </motion.div>
           )}
         </AnimatePresence>
+
       </div>
     </section>
   );

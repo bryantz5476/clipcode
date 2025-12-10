@@ -18,51 +18,66 @@ function ParticleCanvas() {
     let w = canvas.width = window.innerWidth;
     let h = canvas.height = window.innerHeight;
 
-    // Config - Optimized for performance
+    // Config - Performance Optimized with Visual Quality
     const isMobile = window.innerWidth < 768;
-    const particleCount = isMobile ? 40 : 100; // Reduced from 60/180
-    const connectionDistance = 120; // Reduced from 150
-    const mouseDistance = 150; // Reduced from 200
+    const particleCount = isMobile ? 60 : 190; // Slightly increased as requested
+    const connectionDistance = 140;
+    const mouseDistance = 250;
 
     class Particle {
       x: number;
       y: number;
       vx: number;
       vy: number;
+      baseVx: number;
+      baseVy: number;
       size: number;
       color: string;
 
       constructor() {
         this.x = Math.random() * w;
         this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 1.2;
-        this.vy = (Math.random() - 0.5) * 1.2;
-        this.size = Math.random() * 1.5 + 0.5;
-        const colors = ['#3b82f6', '#60a5fa', '#ffffff'];
+        // Base velocity for constant moderate movement
+        this.baseVx = (Math.random() - 0.5) * 0.5;
+        this.baseVy = (Math.random() - 0.5) * 0.5;
+        // Interaction velocity (starts at 0)
+        this.vx = 0;
+        this.vy = 0;
+        this.size = Math.random() * 2 + 0.5;
+        const colors = ['#3b82f6', '#60a5fa', '#a5f3fc'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
       update(mouse: { x: number, y: number }) {
-        this.x += this.vx;
-        this.y += this.vy;
+        // Move by base velocity + interaction velocity
+        this.x += this.baseVx + this.vx;
+        this.y += this.baseVy + this.vy;
 
-        if (this.x < 0 || this.x > w) this.vx *= -1;
-        if (this.y < 0 || this.y > h) this.vy *= -1;
+        // Bounce
+        if (this.x < 0 || this.x > w) {
+          this.baseVx *= -1;
+          this.vx *= -1;
+        }
+        if (this.y < 0 || this.y > h) {
+          this.baseVy *= -1;
+          this.vy *= -1;
+        }
 
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
-        const distSq = dx * dx + dy * dy; // Avoid sqrt when possible
+        const distSq = dx * dx + dy * dy;
 
         if (distSq < mouseDistance * mouseDistance) {
           const distance = Math.sqrt(distSq);
           const force = (mouseDistance - distance) / mouseDistance;
-          this.vx -= (dx / distance) * force * 2;
-          this.vy -= (dy / distance) * force * 2;
+          // Apply force to interaction velocity
+          this.vx -= (dx / distance) * force * 1.8; // Stronger push as requested
+          this.vy -= (dy / distance) * force * 1.8;
         }
 
-        // Damping
-        this.vx *= 0.995;
-        this.vy *= 0.995;
+        // Friction only applies to interaction velocity (return to distinct movement)
+        this.vx *= 0.98; // Reduced friction (was 0.92), now glides more
+        this.vy *= 0.98;
       }
 
       draw() {
@@ -70,7 +85,8 @@ function ParticleCanvas() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
-        ctx.fill(); // Removed shadowBlur for performance
+        // REMOVED: ctx.shadowBlur (Performance killer)
+        ctx.fill();
       }
     }
 
@@ -89,32 +105,40 @@ function ParticleCanvas() {
       }
 
       ctx.clearRect(0, 0, w, h);
-      ctx.lineWidth = 0.3;
+      // Create trailing/spatial effect
+      // ctx.fillStyle = 'rgba(2, 6, 23, 0.1)';
+      // ctx.fillRect(0, 0, w, h);
+
+      ctx.lineWidth = 0.5;
+
+      // Hardware accelerated additive blending (Cheap Glow)
+      ctx.globalCompositeOperation = 'lighter';
 
       for (let i = 0; i < particles.length; i++) {
         const p1 = particles[i];
         p1.update(mouseRef.current);
         p1.draw();
 
-        // Only check every other particle for connections (50% less checks)
-        if (i % 2 === 0) {
-          for (let j = i + 1; j < particles.length; j += 2) {
-            const p2 = particles[j];
-            const dx = p1.x - p2.x;
-            const dy = p1.y - p2.y;
-            const distSq = dx * dx + dy * dy;
+        // Optimized connections loop
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const distSq = dx * dx + dy * dy;
 
-            if (distSq < connectionDistance * connectionDistance) {
-              const opacity = 1 - (Math.sqrt(distSq) / connectionDistance);
-              ctx.beginPath();
-              ctx.strokeStyle = `rgba(100, 150, 255, ${opacity * 0.3})`;
-              ctx.moveTo(p1.x, p1.y);
-              ctx.lineTo(p2.x, p2.y);
-              ctx.stroke();
-            }
+          if (distSq < connectionDistance * connectionDistance) {
+            const opacity = 1 - (Math.sqrt(distSq) / connectionDistance);
+            ctx.beginPath();
+            // Faster stroke without opacity churn? No, opacity is needed for distance effect.
+            // Using rgba parsing string is minor overhead compared to shadowBlur.
+            ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.4})`;
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
           }
         }
       }
+      ctx.globalCompositeOperation = 'source-over'; // Reset
       animationFrameId = requestAnimationFrame(animate);
     };
 
