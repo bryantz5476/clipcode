@@ -132,13 +132,21 @@ export function ServicesCarousel() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Handle click outside to resume animation (for "click elsewhere" rule)
+  // Handle interaction to resume animation
   useEffect(() => {
-    const handleGlobalClick = () => setIsPaused(false);
+    const resumeAnimation = () => setIsPaused(false);
+
     if (isPaused) {
-      window.addEventListener('click', handleGlobalClick);
+      window.addEventListener('click', resumeAnimation);
+      window.addEventListener('scroll', resumeAnimation, { passive: true });
+      window.addEventListener('touchstart', resumeAnimation, { passive: true });
     }
-    return () => window.removeEventListener('click', handleGlobalClick);
+
+    return () => {
+      window.removeEventListener('click', resumeAnimation);
+      window.removeEventListener('scroll', resumeAnimation);
+      window.removeEventListener('touchstart', resumeAnimation);
+    };
   }, [isPaused]);
 
   return (
@@ -184,7 +192,7 @@ export function ServicesCarousel() {
             setIsPaused(true);
           }}
           style={{
-            animation: `scroll-infinite ${isMobile ? 17 : 30}s linear infinite`,
+            animation: `scroll-infinite ${isMobile ? 20 : 30}s linear infinite`,
             animationPlayState: isPaused ? 'paused' : 'running',
             willChange: 'transform'
           }}
