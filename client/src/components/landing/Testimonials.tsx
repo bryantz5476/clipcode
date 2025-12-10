@@ -7,27 +7,27 @@ const testimonials = [
   {
     name: 'María García',
     role: 'Directora, Clínica Dental Sonrisa',
-    content: 'Desde que tenemos la nueva web con sistema de citas, hemos aumentado las reservas un 40%. La inversión se ha amortizado en el primer mes.',
+    content: 'La verdad, no esperaba que fuera tan rápido… desde que pusimos la web con las citas online, las reservas subieron un montón, como un 40%. ¡Y en un mes ya teníamos la inversión de vuelta! Me siento súper tranquila sabiendo que funciona sola.',
     rating: 5
   },
   {
     name: 'Carlos Rodríguez',
     role: 'Fundador, Artesanías del Norte',
-    content: 'Mi tienda Shopify vende las 24 horas. El primer mes facturé más que en todo el año anterior con mi tienda física.',
+    content: 'Yo le decía a mi mujer: ‘Esto no va a servir de nada, vendemos bien en la tienda’. Y pum… ¡el primer mes me llega un pedido desde Noruega! No entiendo nada de ‘React’ ni de servidores, pero la web no falla nunca y ahora representa muchas de mis ventas. Todavía me río cuando lo cuento.',
     rating: 5
   },
   {
     name: 'Ana Martínez',
     role: 'CEO, Consultoría AM',
-    content: 'Profesionalidad, rapidez y un resultado que supera las expectativas. Mi web transmite exactamente lo que quería: confianza y seriedad.',
+    content: 'Tenía mucha prisa porque antes de la reunión con un inversor necesitábamos una web que cargara rápido. La nuestra era lenta y daba vergüenza. Todo fue súper rápido, y cuando la vi lista, dije: ‘Wow, esto sí que da confianza’. Ahora la usamos todo el tiempo para mostrar nuestro negocio y funciona perfecto.',
     rating: 5
   }
 ];
 
 const stats = [
-  { number: 150, suffix: '+', label: 'Proyectos Completados' },
+  { number: 100, suffix: '+', label: 'Proyectos Completados' },
   { number: 98, suffix: '%', label: 'Clientes Satisfechos' },
-  { number: 5, suffix: '+', label: 'Años de Experiencia' },
+  { number: 4, suffix: '+', label: 'Años de Experiencia' },
   { text: '24/7', label: 'Soporte Disponible' }
 ];
 

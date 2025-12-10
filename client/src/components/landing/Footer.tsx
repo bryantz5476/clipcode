@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { SiInstagram, SiTiktok, SiWhatsapp } from 'react-icons/si';
+import { SiInstagram, SiLinkedin, SiWhatsapp } from 'react-icons/si';
 
 export function Footer() {
   return (
@@ -17,8 +17,8 @@ export function Footer() {
             </p>
             <div className="flex gap-4">
               {[
-                { icon: SiInstagram, label: 'Instagram', href: '#' },
-                { icon: SiTiktok, label: 'Tiktok', href: '#' },
+                { icon: SiInstagram, label: 'Instagram', href: 'https://www.instagram.com/clip.code.studio/' },
+                { icon: SiLinkedin, label: 'LinkedIn', href: 'www.linkedin.com/in/clipcode' },
                 { icon: SiWhatsapp, label: 'WhatsApp', href: 'https://wa.me/34607328443' }
               ].map((social) => {
                 const Icon = social.icon;

@@ -5,55 +5,41 @@ import { X } from 'lucide-react';
 const galleryImages = [
   {
     id: 1,
-    title: 'E-commerce Premium',
-    category: 'Tienda Online',
+    title: 'E-commerce Avanzado', // O "Tienda Online Pro"
+    category: 'Ventas & Escalabilidad',
     span: 'col-span-2 row-span-2',
     gradient: 'from-blue-600/20 to-navy-900',
-    description: 'Plataforma de ventas completa con gestión de inventario automatizada.',
-    src: '/e-commerce.webp'
+    description: 'Ecosistema de ventas optimizado para conversión masiva y gestión de stock en tiempo real.',
+    src: '/ecommerce.webp'
   },
   {
     id: 2,
-    title: 'Landing Page',
-    category: 'Servicios',
+    title: 'Corporativa: Vital Dental',
+    category: 'Sector Salud & Confianza',
     span: 'col-span-1 row-span-1',
     gradient: 'from-blue-500/20 to-navy-950',
-    description: 'Página de alta conversión diseñada para captar leads.',
+    description: 'Plataforma clínica que convierte visitantes en pacientes. Seguridad de datos y diseño de autoridad.',
+    src: '/clinica.webp'
   },
   {
     id: 3,
-    title: 'Portfolio Creativo',
-    category: 'Personal',
+    title: 'Sistema de Citas Integrado',
+    category: 'Gestión & Automatización',
     span: 'col-span-1 row-span-2',
     gradient: 'from-blue-400/20 to-navy-900',
-    description: 'Showcase interactivo para artistas y diseñadores.'
+    description: 'Agenda digital centralizada (Setmore/Fresha). Sincronización automática sin intervención humana.',
+    src: '/iphone17.webp'
   },
   {
     id: 4,
-    title: 'Plataforma SaaS',
-    category: 'Tecnología',
+    title: 'Blade Kings: Marca Premium',
+    category: 'Identidad Visual & Impacto',
     span: 'col-span-1 row-span-1',
     gradient: 'from-blue-700/20 to-navy-950',
-    description: 'Panel de control intuitivo para software en la nube.'
-  },
-  {
-    id: 5,
-    title: 'Restaurante Gourmet',
-    category: 'Hostelería',
-    span: 'col-span-1 row-span-1',
-    gradient: 'from-blue-500/20 to-navy-900',
-    description: 'Sistema de reservas y menú digital elegante.'
-  },
-  {
-    id: 6,
-    title: 'Clínica Dental',
-    category: 'Salud',
-    span: 'col-span-2 row-span-1',
-    gradient: 'from-blue-600/20 to-navy-950',
-    description: 'Gestión de citas y fichas de pacientes segura.'
+    description: 'Web inmersiva de carga instantánea. Posicionamiento de marca líder en el mercado local.',
+    src: '/macbarber.webp'
   }
 ];
-
 export function Gallery() {
   const [selectedImage, setSelectedImage] = useState<typeof galleryImages[0] | null>(null);
 
@@ -92,8 +78,9 @@ export function Gallery() {
               style={{
                 borderRadius: '0.5rem',
                 clipPath: 'inset(0 round 0.5rem)',
-                overflow: 'hidden', // 🔥 evita fuga visual y elimina flickering
+                overflow: 'hidden',
                 willChange: 'transform',
+                imageRendering: 'auto' // ← añadido para evitar pixelación
               }}
             >
 
@@ -101,13 +88,20 @@ export function Gallery() {
                 <img
                   src={image.src}
                   alt={image.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 z-0"
+                  className="
+                    absolute inset-0 w-full h-full object-cover
+                    transition-transform duration-700 group-hover:scale-110 z-0
+                    !will-change-transform
+                    [image-rendering:high-quality]
+                    [image-rendering:-webkit-optimize-contrast]
+                    [backface-visibility:hidden]
+                  "
+                  loading="lazy"
                 />
               ) : (
                 <div className={`absolute inset-0 bg-gradient-to-br ${image.gradient} z-0`} />
               )}
 
-              {/* 🔥 Overlay único sin parpadeo */}
               <motion.div
                 className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10 pointer-events-none"
                 initial={{ opacity: 0.6 }}
@@ -115,7 +109,6 @@ export function Gallery() {
                 transition={{ duration: 0.3 }}
               />
 
-              {/* Textos */}
               <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 
                 transition-transform duration-300 z-20">
                 <span className="text-blue-400 text-xs font-medium uppercase tracking-wider">
@@ -124,7 +117,6 @@ export function Gallery() {
                 <h3 className="text-white font-semibold text-lg">{image.title}</h3>
               </div>
 
-              {/* Borde hover */}
               <div className="absolute inset-0 border border-blue-500/0 group-hover:border-blue-500/30 
                 transition-colors duration-300 z-30 pointer-events-none"
                 style={{ borderRadius: '0.5rem' }}
@@ -133,7 +125,6 @@ export function Gallery() {
           ))}
         </div>
 
-        {/* MODAL */}
         <AnimatePresence>
           {selectedImage && (
             <motion.div
@@ -153,7 +144,11 @@ export function Gallery() {
                 onClick={(e) => e.stopPropagation()}
               >
                 {selectedImage.src ? (
-                  <img src={selectedImage.src} alt={selectedImage.title} className="absolute inset-0 w-full h-full object-cover" />
+                  <img
+                    src={selectedImage.src}
+                    alt={selectedImage.title}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
                 ) : (
                   <div className={`absolute inset-0 bg-gradient-to-br ${selectedImage.gradient}`} />
                 )}
