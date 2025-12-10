@@ -12,13 +12,12 @@ export function Footer() {
               <span className="text-blue-400">Clip</span>Code
             </a>
             <p className="text-gray-400 max-w-md mb-6 leading-relaxed">
-              Desarrollo web profesional para negocios que buscan destacar.
-              Desde presencia básica hasta e-commerce completo.
+              ClipCode: Tu equipo de estrategia digital. Implementamos soluciones web ultrarrápidas y seguras, diseñadas quirúrgicamente para el nicho de Citas/Servicios (Estética, Bienestar). Dejamos de lado los CMS lentos. Nuestra única misión es que tu negocio lidere localmente y facture más rápido.
             </p>
             <div className="flex gap-4">
               {[
                 { icon: SiInstagram, label: 'Instagram', href: 'https://www.instagram.com/clip.code.studio/' },
-                { icon: SiLinkedin, label: 'LinkedIn', href: 'www.linkedin.com/in/clipcode' },
+                { icon: SiLinkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/clipcode/' },
                 { icon: SiWhatsapp, label: 'WhatsApp', href: 'https://wa.me/34607328443' }
               ].map((social) => {
                 const Icon = social.icon;
@@ -62,10 +61,7 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Contacto</h4>
             <ul className="space-y-3">
-              <li className="flex items-center gap-3 text-gray-400 text-sm">
-                <Mail className="w-4 h-4 text-blue-400" />
-                <span>clipcode.msg@gmail.com</span>
-              </li>
+
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Phone className="w-4 h-4 text-blue-400" />
                 <span>+34 607 328 443</span>
