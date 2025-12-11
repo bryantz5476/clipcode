@@ -140,20 +140,23 @@ export function Gallery() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="relative w-full max-w-5xl aspect-video bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+                className="relative w-full max-w-5xl bg-[#0a0a0a] rounded-2xl overflow-hidden border border-white/10 shadow-2xl flex flex-col md:block md:aspect-video max-h-[90vh] md:max-h-none"
                 onClick={(e) => e.stopPropagation()}
               >
-                {selectedImage.src ? (
-                  <img
-                    src={selectedImage.src}
-                    alt={selectedImage.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className={`absolute inset-0 bg-gradient-to-br ${selectedImage.gradient}`} />
-                )}
+                {/* Image Container */}
+                <div className="relative h-64 md:absolute md:inset-0 md:h-full">
+                  {selectedImage.src ? (
+                    <img
+                      src={selectedImage.src}
+                      alt={selectedImage.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className={`w-full h-full bg-gradient-to-br ${selectedImage.gradient}`} />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 md:opacity-100 pointer-events-none" />
+                </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 pointer-events-none" />
 
                 <button
                   className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors z-50"
@@ -162,7 +165,8 @@ export function Gallery() {
                   <X className="w-6 h-6" />
                 </button>
 
-                <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
+                {/* Content Container */}
+                <div className="relative p-6 md:absolute md:bottom-0 md:left-0 md:right-0 md:p-12 overflow-y-auto md:overflow-visible bg-black md:bg-transparent flex-1">
                   <motion.span
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -174,7 +178,7 @@ export function Gallery() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="text-3xl md:text-5xl font-bold text-white mb-4"
+                    className="text-2xl md:text-5xl font-bold text-white mb-4"
                   >
                     {selectedImage.title}
                   </motion.h3>
@@ -182,7 +186,7 @@ export function Gallery() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="text-gray-200 text-lg max-w-xl"
+                    className="text-gray-200 text-base md:text-lg max-w-xl"
                   >
                     {selectedImage.description}
                   </motion.p>

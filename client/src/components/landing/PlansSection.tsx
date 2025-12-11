@@ -10,8 +10,8 @@ const plans = [
   {
     id: 'basico',
     name: 'Plan Lanzamiento',
-    price: '350',
-    description: 'Ideal para iniciar tu presencia digital con lo esencial.',
+    price: '390',
+    description: 'Landing Page de Alta Conversión.',
     features: [
       'Diseño One-Page de Alto Impacto',
       'Dominio incluido (1 año)',
@@ -29,11 +29,11 @@ const plans = [
     id: 'profesional',
     name: 'Plan Profesional',
     price: '490',
-    description: 'La opción preferida. Escala tu negocio con reservas automáticas.',
+    description: 'La opción preferida. Escala tu negocio con reservas automáticas y SEO.',
     features: [
       'Todo lo del Plan Lanzamiento +',
       'Diseño Expandido Multi-Sección',
-      'Estructura Corporativa de 5 secciones',
+      'Infraestructura Digital de Captación',
       'Integración de Sistema de Citas',
       'SEO Local Estratégico',
       'Galería de Trabajos Profesional',
@@ -47,7 +47,7 @@ const plans = [
   {
     id: 'ecommerce',
     name: 'Plan E-commerce',
-    price: '990',
+    price: '1290',
     description: 'Vende mientras duermes sin complicaciones técnicas.',
     features: [
       'Tienda Completa Optimizada',

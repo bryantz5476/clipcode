@@ -82,6 +82,24 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
     setIsHovered(false);
   };
 
+  useEffect(() => {
+    const handleReset = () => {
+      if (isHovered) {
+        setIsHovered(false);
+        x.set(0);
+        y.set(0);
+      }
+    };
+
+    window.addEventListener('scroll', handleReset, { passive: true });
+    window.addEventListener('touchstart', handleReset, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleReset);
+      window.removeEventListener('touchstart', handleReset);
+    };
+  }, [isHovered, x, y]);
+
   const Icon = service.icon;
 
   return (
@@ -90,6 +108,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
+      onClick={() => setIsHovered(!isHovered)} // Toggle on click for mobile
       style={{
         rotateX: isHovered ? rotateX : 0,
         rotateY: isHovered ? rotateY : 0,
