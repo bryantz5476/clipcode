@@ -287,7 +287,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.05] bg-[length:40px_40px] pointer-events-none" />
 
       {/* Main Content */}
-      <div className="container relative z-10 mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center pt-32 md:pt-40">
+      <div className="container relative z-10 mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center pt-32 md:pt-40 pb-12 lg:pb-0">
 
         {/* Left Content */}
         <div className="max-w-2xl text-left pointer-events-none">

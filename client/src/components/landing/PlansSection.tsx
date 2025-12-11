@@ -28,7 +28,7 @@ const plans = [
   {
     id: 'profesional',
     name: 'Plan Profesional',
-    price: '490',
+    price: '510',
     description: 'La opción preferida. Escala tu negocio con reservas automáticas y SEO.',
     features: [
       'Todo lo del Plan Lanzamiento +',
