@@ -30,30 +30,17 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-    sourcemap: false, // Disable sourcemaps for production
-    target: 'esnext', // Use modern JS for smaller bundle
+    sourcemap: false,
+    target: 'esnext',
     minify: 'esbuild',
     cssCodeSplit: true,
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('wouter')) {
-              return 'vendor-react';
-            }
-            if (id.includes('framer-motion')) {
-              return 'vendor-framer';
-            }
-            if (id.includes('lucide-react')) {
-              return 'vendor-icons';
-            }
-            // Group other node_modules into a 'vendor' chunk to avoid too many small requests
-            return 'vendor-utils';
-          }
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'react-helmet-async'],
+          'framer': ['framer-motion'],
         },
       },
-      // Treeshaking side-effects
-      treeshake: true,
     },
   },
   server: {
