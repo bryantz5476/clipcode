@@ -6,11 +6,11 @@ import { Loader2 } from 'lucide-react'; // Fallback spinner
 
 // Lazy Loaded Components
 const InfiniteBanner = lazy(() => import('@/components/landing/InfiniteBanner').then(module => ({ default: module.InfiniteBanner })));
+const AboutUs = lazy(() => import('@/components/landing/AboutUs').then(module => ({ default: module.AboutUs })));
 const ServicesCarousel = lazy(() => import('@/components/landing/ServicesCarousel').then(module => ({ default: module.ServicesCarousel })));
 const PlansSection = lazy(() => import('@/components/landing/PlansSection').then(module => ({ default: module.PlansSection })));
 const BenefitsSection = lazy(() => import('@/components/landing/BenefitsSection').then(module => ({ default: module.BenefitsSection })));
 const Gallery = lazy(() => import('@/components/landing/Gallery').then(module => ({ default: module.Gallery })));
-const Testimonials = lazy(() => import('@/components/landing/Testimonials').then(module => ({ default: module.Testimonials })));
 const FinalCTA = lazy(() => import('@/components/landing/FinalCTA').then(module => ({ default: module.FinalCTA })));
 const Footer = lazy(() => import('@/components/landing/Footer').then(module => ({ default: module.Footer })));
 
@@ -53,6 +53,9 @@ export default function Home() {
           {/* 3. Banner Infinito (Clientes/Tecnologías) */}
           <InfiniteBanner />
 
+          {/* 3.5. QUIENES SOMOS (About Us) */}
+          <AboutUs />
+
           {/* 4. Carrusel de Servicios */}
           <ServicesCarousel />
 
@@ -65,8 +68,6 @@ export default function Home() {
           {/* 7. Galería de Trabajos */}
           <Gallery />
 
-          {/* 8. Testimonios */}
-          <Testimonials />
 
           {/* 9. Llamada a la Acción Final (Con Ref) */}
           <FinalCTA
