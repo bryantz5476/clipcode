@@ -1,5 +1,4 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MousePointer2 } from 'lucide-react';
 
@@ -36,13 +35,8 @@ function GrainBackground() {
 }
 
 export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: () => void, onScrollToContact: () => void }) {
-  const containerRef = useRef<HTMLElement>(null);
-  const { scrollY } = useScroll();
-  const y2 = useTransform(scrollY, [0, 500], [0, -150]);
-
   return (
     <section
-      ref={containerRef}
       className="relative min-h-[100svh] md:min-h-[95vh] flex items-center overflow-hidden bg-[#020617]"
       data-testid="section-hero"
     >
