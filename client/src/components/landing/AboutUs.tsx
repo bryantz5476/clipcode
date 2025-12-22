@@ -6,13 +6,18 @@ import { ArrowRight } from 'lucide-react';
 export function AboutUs() {
     const containerRef = useRef<HTMLDivElement>(null);
 
+    // Track scroll progress when section enters viewport
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        offset: ["start end", "center center"]
+        offset: ["start end", "center center"] // Standard: start when enters, finish at center
     });
 
-    // Optimized: Reduced to 3 layers instead of 5 for better mobile performance
-    const blurRevealProgress = useTransform(scrollYProgress, [0, 1], [0, 100]);
+    // Transform scroll progress to clip-path percentage
+    // IMPORTANT: Start at 50% hidden (not 100%) so image is always partially visible
+    const clipProgress = useTransform(scrollYProgress, [0, 1], [50, 0]);
+
+    // Subtle parallax effect
+    const imageY = useTransform(scrollYProgress, [0, 1], [20, -10]);
 
     return (
         <section className="relative py-24 md:py-32 bg-[#020617] overflow-hidden" data-testid="section-about-us">
@@ -21,61 +26,40 @@ export function AboutUs() {
             <div className="container relative z-10 mx-auto px-4 sm:px-6">
                 <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-                    {/* Left Column: Image with Gradual Blur only - no entrance animation */}
+                    {/* Left Column: Image with Scroll Reveal effect */}
                     <div ref={containerRef} className="relative">
-                        <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                            <div className="relative aspect-[4/5] w-full">
+                        {/* Outer container for clip-path reveal */}
+                        <motion.div
+                            className="relative rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-md lg:max-w-full"
+                            style={{
+                                clipPath: useTransform(clipProgress, (v) =>
+                                    `inset(${v}% 0% 0% 0%)`
+                                ),
+                            }}
+                        >
+                            {/* Inner image with parallax and scale effect */}
+                            <motion.div
+                                className="relative aspect-square w-full"
+                                style={{
+                                    y: imageY,
+                                }}
+                            >
                                 <img
                                     src="/iphone17.webp"
                                     alt="Equipo ClipCode"
                                     className="w-full h-full object-cover"
                                     loading="lazy"
                                 />
-
-                                {/* OPTIMIZED Gradual Blur Reveal Effect - 3 layers instead of 5 */}
-                                {/* Layer 1: Light blur - reveals first */}
-                                <motion.div
-                                    className="absolute inset-0 pointer-events-none backdrop-blur-[8px] will-change-auto"
-                                    style={{
-                                        maskImage: useTransform(blurRevealProgress, (v) =>
-                                            `linear-gradient(to bottom, transparent 0%, transparent ${Math.max(0, v - 20)}%, black ${Math.max(0, v - 5)}%, black 100%)`
-                                        ),
-                                        WebkitMaskImage: useTransform(blurRevealProgress, (v) =>
-                                            `linear-gradient(to bottom, transparent 0%, transparent ${Math.max(0, v - 20)}%, black ${Math.max(0, v - 5)}%, black 100%)`
-                                        ),
-                                    }}
-                                />
-
-                                {/* Layer 2: Medium blur */}
-                                <motion.div
-                                    className="absolute inset-0 pointer-events-none backdrop-blur-[20px] will-change-auto"
-                                    style={{
-                                        maskImage: useTransform(blurRevealProgress, (v) =>
-                                            `linear-gradient(to bottom, transparent 0%, transparent ${v}%, black ${Math.min(100, v + 10)}%, black 100%)`
-                                        ),
-                                        WebkitMaskImage: useTransform(blurRevealProgress, (v) =>
-                                            `linear-gradient(to bottom, transparent 0%, transparent ${v}%, black ${Math.min(100, v + 10)}%, black 100%)`
-                                        ),
-                                    }}
-                                />
-
-                                {/* Layer 3: Heavy blur - the frosted glass look */}
-                                <motion.div
-                                    className="absolute inset-0 pointer-events-none backdrop-blur-[40px] will-change-auto"
-                                    style={{
-                                        maskImage: useTransform(blurRevealProgress, (v) =>
-                                            `linear-gradient(to bottom, transparent 0%, transparent ${Math.min(100, v + 10)}%, black ${Math.min(100, v + 25)}%, black 100%)`
-                                        ),
-                                        WebkitMaskImage: useTransform(blurRevealProgress, (v) =>
-                                            `linear-gradient(to bottom, transparent 0%, transparent ${Math.min(100, v + 10)}%, black ${Math.min(100, v + 25)}%, black 100%)`
-                                        ),
-                                    }}
-                                />
-                            </div>
-                        </div>
+                            </motion.div>
+                        </motion.div>
 
                         {/* Decorative Element */}
-                        <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-blue-600 rounded-full blur-xl opacity-30" />
+                        <motion.div
+                            className="absolute -bottom-4 -right-4 w-20 h-20 bg-blue-600 rounded-full blur-xl"
+                            style={{
+                                opacity: useTransform(clipProgress, [100, 0], [0, 0.3]),
+                            }}
+                        />
                     </div>
 
                     {/* Right Column: Content */}

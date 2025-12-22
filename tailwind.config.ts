@@ -148,6 +148,11 @@ export default {
           "0%, 100%": { opacity: "1", filter: "brightness(1)" },
           "50%": { opacity: "0.5", filter: "brightness(0.5)" },
         },
+        "gradient-wave": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
 
       },
       animation: {
@@ -162,6 +167,7 @@ export default {
 
         "dim-pulse": "dim-pulse 3s ease-in-out infinite",
         "glare": "glare 0.6s ease-out forwards",
+        "gradient-wave": "gradient-wave 4s ease-in-out infinite",
       },
     },
   },

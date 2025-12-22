@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MousePointer2 } from 'lucide-react';
 
@@ -15,29 +16,45 @@ const revealVariants = {
   }),
 };
 
-/* --- Grain/Noise Background Component --- */
-function GrainBackground() {
+/* --- Grain Background Effect (Clean & Professional) --- */
+const GrainBackground = memo(function GrainBackground() {
   return (
-    <div className="absolute inset-0 w-full h-full pointer-events-none select-none z-0 overflow-hidden bg-[#0d0d14]">
-      {/* 1. Very subtle color glow (adapted to blue) */}
-      <div className="absolute top-[-30%] left-[-20%] w-[60%] h-[60%] rounded-full bg-blue-900/15 blur-[150px]" />
-      <div className="absolute bottom-[-30%] right-[-20%] w-[50%] h-[50%] rounded-full bg-indigo-900/10 blur-[150px]" />
+    <div className="absolute inset-0 w-full h-full pointer-events-none select-none z-0 overflow-hidden bg-[#0A0A0A]">
+      {/* Atmospheric Glow */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(circle at 15% 20%, rgba(0, 80, 220, 0.25) 0%, transparent 45%)',
+          filter: 'blur(60px)',
+          transform: 'translateZ(0)',
+          willChange: 'transform',
+        }}
+      />
 
-      {/* 2. Very subtle noise (barely perceptible) */}
+      {/* Subtle Texture */}
       <div
         className="absolute inset-0 opacity-[0.04] mix-blend-overlay"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          zIndex: 1,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      {/* Vignette */}
+      <div
+        className="absolute inset-0 z-[2]"
+        style={{
+          background: 'radial-gradient(circle at center, transparent 30%, #0A0A0A 100%)',
         }}
       />
     </div>
   );
-}
+});
 
 export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: () => void, onScrollToContact: () => void }) {
   return (
     <section
-      className="relative min-h-[100svh] md:min-h-[95vh] flex items-center overflow-hidden bg-[#020617]"
+      className="relative min-h-[100svh] md:min-h-[95vh] flex items-center overflow-hidden bg-[#0A0A0A]"
       data-testid="section-hero"
     >
       <GrainBackground />
@@ -69,10 +86,10 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
               initial="hidden"
               animate="visible"
               variants={revealVariants}
-              className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-4 sm:mb-6 md:mb-8 leading-[0.95] font-display tracking-tighter uppercase"
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-4 sm:mb-6 md:mb-8 leading-[0.95] font-display tracking-tighter uppercase"
             >
               TU NEGOCIO EN <br />
-              <span className="bg-gradient-to-r from-blue-500 via-blue-400 to-indigo-400 bg-clip-text text-transparent animate-dim-pulse tracking-wide">
+              <span className="bg-[linear-gradient(to_right,#22d3ee,#3b82f6,#6366f1,#22d3ee)] bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient-wave">
                 PILOTO AUTOMÁTICO.
               </span>
             </motion.h1>
@@ -127,23 +144,23 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
         </div>
 
         {/* Right Content (Image) */}
-        <div className="relative h-[250px] xs:h-[280px] sm:h-[350px] md:h-[400px] lg:h-[550px] xl:h-[600px] w-full flex items-center justify-center pointer-events-none order-first lg:order-last">
-          {/* Main Hero Image */}
+        <div className="relative h-[250px] sm:h-[350px] md:h-[400px] lg:h-[550px] xl:h-[600px] w-full flex items-center justify-center pointer-events-none order-first lg:order-last">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, x: 20 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.8, ease: 'easeOut' }}
-            className="w-[55%] xs:w-[50%] sm:w-[45%] md:w-[40%] lg:w-[75%] xl:w-[80%] h-[85%] sm:h-[90%] z-10"
+            className="w-[55%] sm:w-[45%] md:w-[40%] lg:w-[75%] xl:w-[80%] h-[85%] sm:h-[90%] z-10"
           >
             <img
               src="/iphone17.webp"
-              alt=""
+              alt="Vista previa de la aplicación ClipCode"
+              loading="eager"
+              decoding="async"
               className="w-full h-full object-cover rounded-2xl shadow-2xl"
             />
           </motion.div>
         </div>
       </div>
-
     </section>
   );
 }

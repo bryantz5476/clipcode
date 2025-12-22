@@ -105,10 +105,10 @@ export const FinalCTA = forwardRef<HTMLElement, { onScrollToPlans: () => void }>
             size="lg"
             variant="outline"
             onClick={() => window.open('https://wa.me/34607328443?text=%C2%A1Hola!%20Quiero%20dar%20el%20paso%20al%20futuro', '_blank')}
-            className="relative bg-transparent border border-blue-500/50 text-white px-8 py-6 text-lg rounded-lg tracking-wide backdrop-blur-sm transition-all duration-300 overflow-hidden group hover:border-white hover:text-[#020617]"
+            className="relative bg-transparent border border-blue-500/50 text-white px-8 py-6 text-lg rounded-lg tracking-wide backdrop-blur-sm transition-all duration-300 overflow-hidden group hover:bg-white/5"
             data-testid="button-cta-contactar"
           >
-            <div className="absolute inset-0 bg-white transform -translate-x-full transition-transform duration-300 ease-out group-hover:translate-x-0" />
+            <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-glare" />
             <span className="relative flex items-center z-10">
               <MessageCircle className="mr-2 w-5 h-5" />
               Contactar Primero
