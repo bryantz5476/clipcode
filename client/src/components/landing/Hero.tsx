@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
-import { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MousePointer2 } from 'lucide-react';
+import { DarkHolographicBackground } from './DarkHolographicBackground';
 
 const revealVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -16,40 +16,7 @@ const revealVariants = {
   }),
 };
 
-/* --- Grain Background Effect (Clean & Professional) --- */
-const GrainBackground = memo(function GrainBackground() {
-  return (
-    <div className="absolute inset-0 w-full h-full pointer-events-none select-none z-0 overflow-hidden bg-[#0A0A0A]">
-      {/* Atmospheric Glow */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: 'radial-gradient(circle at 15% 20%, rgba(0, 80, 220, 0.25) 0%, transparent 45%)',
-          filter: 'blur(60px)',
-          transform: 'translateZ(0)',
-          willChange: 'transform',
-        }}
-      />
 
-      {/* Subtle Texture */}
-      <div
-        className="absolute inset-0 opacity-[0.04] mix-blend-overlay"
-        style={{
-          zIndex: 1,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
-
-      {/* Vignette */}
-      <div
-        className="absolute inset-0 z-[2]"
-        style={{
-          background: 'radial-gradient(circle at center, transparent 30%, #0A0A0A 100%)',
-        }}
-      />
-    </div>
-  );
-});
 
 export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: () => void, onScrollToContact: () => void }) {
   return (
@@ -57,7 +24,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
       className="relative min-h-[100svh] md:min-h-[95vh] flex items-center overflow-hidden bg-[#0A0A0A]"
       data-testid="section-hero"
     >
-      <GrainBackground />
+      <DarkHolographicBackground />
 
       {/* Main Content - 2 Column Grid */}
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 sm:gap-8 lg:gap-12 items-center pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-8 sm:pb-12">
