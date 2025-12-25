@@ -1,7 +1,25 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function DarkHolographicBackground() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(true);
+
+    // Track visibility to pause rendering when off-screen
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsVisible(entry.isIntersecting);
+            },
+            { threshold: 0, rootMargin: '100px' } // Small buffer
+        );
+
+        observer.observe(container);
+        return () => observer.disconnect();
+    }, []);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -110,10 +128,6 @@ export function DarkHolographicBackground() {
         // Add minimal highlight (muted white/blue)
         surfaceColor += spec * vec3(0.15, 0.15, 0.25) * t;
         
-        // Vignette to ensure edges are dark (focus on center/content)
-        // Actually, user said full screen, but premium feel often implies subtle vignette
-        // Let's keep it uniform but dark
-        
         // Final contrast adjustment to ensure >= 75% darkness
         surfaceColor = pow(surfaceColor, vec3(1.3)); // Darken midtones
         
@@ -173,8 +187,15 @@ export function DarkHolographicBackground() {
 
         let animationFrameId: number;
         let startTime = performance.now();
+        let lastTime = 0;
 
         const render = () => {
+            // CRITICAL: Only render if visible
+            if (!isVisible) {
+                animationFrameId = requestAnimationFrame(render);
+                return;
+            }
+
             const currentTime = (performance.now() - startTime) / 1000;
 
             if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
@@ -197,10 +218,10 @@ export function DarkHolographicBackground() {
             cancelAnimationFrame(animationFrameId);
             gl.deleteProgram(program);
         };
-    }, []);
+    }, [isVisible]); // Re-run when visibility changes
 
     return (
-        <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-[#030308]">
+        <div ref={containerRef} className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-[#030308]">
             <canvas ref={canvasRef} className="block w-full h-full" />
         </div>
     );

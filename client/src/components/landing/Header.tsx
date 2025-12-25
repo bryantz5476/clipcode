@@ -24,6 +24,7 @@ export function Header({ onScrollToPlans }: { onScrollToPlans: () => void }) {
   };
 
   const navItems = [
+    { label: 'Nosotros', id: 'section-about-us' },
     { label: 'Servicios', id: 'section-services' },
     { label: 'Planes', id: 'planes' },
     { label: 'Portfolio', id: 'section-gallery' },

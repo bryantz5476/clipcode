@@ -1,8 +1,7 @@
 import { forwardRef } from 'react';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
+import { Check, ArrowRight, Sparkles } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useShopifyProducts } from '@/hooks/use-shopify';
 
@@ -67,51 +66,34 @@ const plans = [
   }
 ];
 
-function MagicCard({
-  plan,
-  index,
-  onAction
-}: {
-  plan: typeof plans[0];
-  index: number;
-  onAction: () => void;
-}) {
-
+// Lightweight card with CSS-only border animation
+function PlanCard({ plan, onAction }: { plan: typeof plans[0]; onAction: () => void }) {
   return (
     <div className="relative h-full group">
-      {/* MAGIC BORDER LAYER */}
-      <div className={`absolute -inset-[2px] rounded-3xl overflow-hidden ${plan.highlighted ? 'opacity-100' : 'opacity-100'}`}>
-        <motion.div
-          className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0_340deg,white_360deg)] opacity-40 via-blue-500 to-transparent w-[300%] h-[300%] left-[-100%] top-[-100%]"
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 8, // Slower rotation is less distracting and cheaper
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          style={{
-            willChange: 'transform', // Hint to browser
-            backgroundImage: plan.highlighted
-              ? 'conic-gradient(from 0deg, transparent 0 320deg, #3b82f6 340deg, #2563EB 360deg)'
-              : 'conic-gradient(from 0deg, transparent 0 300deg, #94a3b8 360deg)'
-          }}
-        />
-      </div>
+      {/* CSS-only animated border using gradient */}
+      <div
+        className={`absolute -inset-[1px] rounded-3xl overflow-hidden ${plan.highlighted ? 'opacity-100' : 'opacity-60'}`}
+        style={{
+          background: plan.highlighted
+            ? 'linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #3b82f6 100%)'
+            : 'linear-gradient(135deg, #475569 0%, #1e293b 50%, #475569 100%)',
+          backgroundSize: '200% 200%',
+          animation: 'gradient-shift 4s ease infinite'
+        }}
+      />
 
-      {/* BLURRY GLOW */}
+      {/* Glow effect - static, no animation */}
       {plan.highlighted && (
-        <div className="absolute -inset-1 rounded-3xl bg-blue-600/20 blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
+        <div className="absolute -inset-2 rounded-3xl bg-blue-600/15 opacity-50 group-hover:opacity-80 transition-opacity duration-300" />
       )}
 
-      {/* CONTENT CONTAINER */}
-      <div className={`relative h-full rounded-[22px] bg-[#020617] p-8 flex flex-col border transition-all duration-300 ${plan.highlighted
-        ? 'border-blue-500/20 shadow-2xl shadow-blue-900/10'
-        : 'border-white/5 hover:border-white/10'
+      {/* Content */}
+      <div className={`relative h-full rounded-[22px] bg-[#020617] p-8 flex flex-col border transition-all duration-300 ${plan.highlighted ? 'border-blue-500/20 shadow-2xl shadow-blue-900/10' : 'border-white/5 hover:border-white/10'
         }`}>
 
         {plan.highlighted && (
           <div className="absolute top-0 right-0 p-4">
-            <Badge className="bg-blue-600 text-white border-none py-1 px-3 shadow-lg shadow-blue-600/40 animate-pulse">
+            <Badge className="bg-blue-600 text-white border-none py-1 px-3 shadow-lg shadow-blue-600/40">
               <Sparkles className="w-3 h-3 mr-1 inline" /> POPULAR
             </Badge>
           </div>
@@ -123,17 +105,15 @@ function MagicCard({
             <span className="text-5xl font-bold text-white tracking-tight">{plan.price}</span>
             <span className="text-lg text-gray-500">€</span>
           </div>
-          <p className="mt-4 text-sm text-gray-400 leading-relaxed min-h-[60px]">
-            {plan.description}
-          </p>
+          <p className="mt-4 text-sm text-gray-400 leading-relaxed min-h-[60px]">{plan.description}</p>
         </div>
-        {/* CTA BUTTON */}
+
         <div className="mb-8">
           <Button
             onClick={onAction}
             className={`group w-full py-6 rounded-xl transition-all duration-300 ${plan.highlighted
-              ? 'bg-white text-navy-950 font-bold hover:bg-gray-100 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] border-transparent'
-              : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
+                ? 'bg-white text-navy-950 font-bold hover:bg-gray-100 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] border-transparent'
+                : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
               }`}
           >
             {plan.cta}
@@ -157,8 +137,14 @@ function MagicCard({
             </li>
           ))}
         </ul>
-
       </div>
+
+      <style>{`
+        @keyframes gradient-shift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -176,30 +162,19 @@ export const PlansSection = forwardRef<HTMLElement>((props, ref) => {
 
   return (
     <section ref={ref} id="planes" className="py-32 bg-[#020617] relative overflow-hidden">
-
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
+        <div className="text-center mb-20">
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight font-display">
             Inversión <span className="text-blue-500">Inteligente</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             Claridad total. Sin sorpresas. Escala al siguiente nivel.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-8 lg:gap-12 items-stretch">
-          {plans.map((plan, index) => (
-            <MagicCard
-              key={plan.id}
-              plan={plan}
-              index={index}
-              onAction={() => handleAction(plan)}
-            />
+          {plans.map((plan) => (
+            <PlanCard key={plan.id} plan={plan} onAction={() => handleAction(plan)} />
           ))}
         </div>
       </div>

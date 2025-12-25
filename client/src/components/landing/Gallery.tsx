@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 
 const galleryImages = [
   {
     id: 1,
-    title: 'E-commerce Avanzado', // O "Tienda Online Pro"
+    title: 'E-commerce Avanzado',
     category: 'Ventas & Escalabilidad',
     span: 'col-span-2 row-span-2',
     gradient: 'from-blue-600/20 to-navy-900',
@@ -40,6 +40,7 @@ const galleryImages = [
     src: '/macbarber.webp'
   }
 ];
+
 export function Gallery() {
   const [selectedImage, setSelectedImage] = useState<typeof galleryImages[0] | null>(null);
 
@@ -47,84 +48,53 @@ export function Gallery() {
     <section id="section-gallery" className="py-24 bg-gradient-to-b from-black to-navy-950" data-testid="section-gallery">
       <div className="max-w-7xl mx-auto px-6">
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 font-display">
             Proyectos que Hablan por Sí Mismos
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Una muestra de lo que podemos crear juntos para tu negocio
           </p>
-        </motion.div>
+        </div>
 
+        {/* CSS-only grid with hover effects - no motion.div */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
-          {galleryImages.map((image, index) => (
-
-            <motion.div
+          {galleryImages.map((image) => (
+            <div
               key={image.id}
-              layoutId={`card-${image.id}`}
               onClick={() => setSelectedImage(image)}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ scale: 1.02 }}
-              className={`relative cursor-pointer group ${image.span}`}
-              style={{
-                borderRadius: '0.5rem',
-                clipPath: 'inset(0 round 0.5rem)',
-                overflow: 'hidden',
-                willChange: 'transform',
-                imageRendering: 'auto' // ← añadido para evitar pixelación
-              }}
+              className={`relative cursor-pointer group ${image.span} rounded-lg overflow-hidden transition-transform duration-300 hover:scale-[1.02]`}
             >
-
               {image.src ? (
                 <img
                   src={image.src}
                   alt={image.title}
-                  className="
-                    absolute inset-0 w-full h-full object-cover
-                    transition-transform duration-700 group-hover:scale-110 z-0
-                    !will-change-transform
-                    [image-rendering:high-quality]
-                    [image-rendering:-webkit-optimize-contrast]
-                    [backface-visibility:hidden]
-                  "
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 z-0"
                   loading="lazy"
                 />
               ) : (
                 <div className={`absolute inset-0 bg-gradient-to-br ${image.gradient} z-0`} />
               )}
 
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10 pointer-events-none"
-                initial={{ opacity: 0.6 }}
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              />
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10 opacity-60 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 
-                transition-transform duration-300 z-20">
+              {/* Content */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20">
                 <span className="text-blue-400 text-xs font-medium uppercase tracking-wider">
                   {image.category}
                 </span>
                 <h3 className="text-white font-semibold text-lg">{image.title}</h3>
               </div>
 
-              <div className="absolute inset-0 border border-blue-500/0 group-hover:border-blue-500/30 
-                transition-colors duration-300 z-30 pointer-events-none"
-                style={{ borderRadius: '0.5rem' }}
-              />
-            </motion.div>
+              {/* Border */}
+              <div className="absolute inset-0 border border-blue-500/0 group-hover:border-blue-500/30 transition-colors duration-300 z-30 pointer-events-none rounded-lg" />
+            </div>
           ))}
         </div>
 
+        {/* Modal - Keep AnimatePresence only for the modal */}
         <AnimatePresence>
           {selectedImage && (
             <motion.div
@@ -132,7 +102,7 @@ export function Gallery() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90"
               onClick={() => setSelectedImage(null)}
             >
               <motion.div
@@ -157,7 +127,6 @@ export function Gallery() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90 md:opacity-100 pointer-events-none" />
                 </div>
 
-
                 <button
                   className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors z-50"
                   onClick={() => setSelectedImage(null)}
@@ -167,29 +136,15 @@ export function Gallery() {
 
                 {/* Content Container */}
                 <div className="relative p-6 md:absolute md:bottom-0 md:left-0 md:right-0 md:p-12 overflow-y-auto md:overflow-visible bg-black md:bg-transparent flex-1">
-                  <motion.span
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-blue-400 font-bold tracking-wider uppercase text-sm mb-2 block"
-                  >
+                  <span className="text-blue-400 font-bold tracking-wider uppercase text-sm mb-2 block">
                     {selectedImage.category}
-                  </motion.span>
-                  <motion.h3
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="text-2xl md:text-5xl font-bold text-white mb-4"
-                  >
+                  </span>
+                  <h3 className="text-2xl md:text-5xl font-bold text-white mb-4">
                     {selectedImage.title}
-                  </motion.h3>
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="text-gray-200 text-base md:text-lg max-w-xl"
-                  >
+                  </h3>
+                  <p className="text-gray-200 text-base md:text-lg max-w-xl">
                     {selectedImage.description}
-                  </motion.p>
+                  </p>
                 </div>
               </motion.div>
             </motion.div>

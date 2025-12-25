@@ -4,11 +4,11 @@
 
 /* LIGHT MODE - Premium Navy/Black/White Theme */
 :root {
-  --button-outline: rgba(0,0,0, .10);
-  --badge-outline: rgba(0,0,0, .05);
+  --button-outline: rgba(0, 0, 0, .10);
+  --badge-outline: rgba(0, 0, 0, .05);
   --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .08);
+  --elevate-1: rgba(0, 0, 0, .03);
+  --elevate-2: rgba(0, 0, 0, .08);
   --background: 0 0% 100%;
   --foreground: 210 100% 5%;
   --border: 210 20% 90%;
@@ -60,7 +60,7 @@
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-/* Fallback for older browsers */
+  /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 
@@ -91,11 +91,11 @@
 
 /* DARK MODE - Premium Navy/Black/White Theme (Primary Mode) */
 .dark {
-  --button-outline: rgba(255,255,255, .12);
-  --badge-outline: rgba(255,255,255, .08);
+  --button-outline: rgba(255, 255, 255, .12);
+  --badge-outline: rgba(255, 255, 255, .08);
   --opaque-button-border-intensity: 12;
-  --elevate-1: rgba(255,255,255, .05);
-  --elevate-2: rgba(255,255,255, .10);
+  --elevate-1: rgba(255, 255, 255, .05);
+  --elevate-2: rgba(255, 255, 255, .10);
   --background: 210 100% 2%;
   --foreground: 0 0% 98%;
   --border: 210 50% 12%;
@@ -141,7 +141,7 @@
   --shadow-xl: 0px 24px 50px 0px hsl(0 0% 0% / 0.5), 0px 10px 20px -6px hsl(0 0% 0% / 0.4);
   --shadow-2xl: 0px 36px 70px 0px hsl(0 0% 0% / 0.55);
 
-/* Fallback for older browsers */
+  /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 
@@ -297,13 +297,30 @@
   .perspective-1000 {
     perspective: 1000px;
   }
+
   .transform-style-3d {
     transform-style: preserve-3d;
   }
+
   .translate-z-12 {
     transform: translateZ(50px);
   }
+
   .translate-z-20 {
     transform: translateZ(80px);
+  }
+
+  @keyframes glare {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-glare {
+    animation: glare 0.75s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 }

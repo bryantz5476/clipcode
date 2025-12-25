@@ -1,78 +1,49 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 
 export function AboutUs() {
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    // Track scroll progress when section enters viewport
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start end", "center center"] // Standard: start when enters, finish at center
-    });
-
-    // Transform scroll progress to clip-path percentage
-    // IMPORTANT: Start at 50% hidden (not 100%) so image is always partially visible
-    const clipProgress = useTransform(scrollYProgress, [0, 1], [50, 0]);
-
-    // Subtle parallax effect
-    const imageY = useTransform(scrollYProgress, [0, 1], [20, -10]);
-
     return (
         <section className="relative py-24 md:py-32 bg-[#020617] overflow-hidden" data-testid="section-about-us">
-            <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[400px] h-[400px] bg-blue-900/15 rounded-full blur-[100px] pointer-events-none" />
+            {/* Optimized background - static gradient instead of blur-[100px] */}
+            <div
+                className="absolute inset-0 pointer-events-none opacity-30"
+                style={{
+                    background: 'radial-gradient(circle at 10% 50%, rgba(30, 58, 138, 0.2) 0%, transparent 40%)'
+                }}
+            />
 
             <div className="container relative z-10 mx-auto px-4 sm:px-6">
                 <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
-                    {/* Left Column: Image with Scroll Reveal effect */}
-                    <div ref={containerRef} className="relative">
-                        {/* Outer container for clip-path reveal */}
-                        <motion.div
-                            className="relative rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-md lg:max-w-full"
-                            style={{
-                                clipPath: useTransform(clipProgress, (v) =>
-                                    `inset(${v}% 0% 0% 0%)`
-                                ),
-                            }}
-                        >
-                            {/* Inner image with parallax and scale effect */}
-                            <motion.div
-                                className="relative aspect-square w-full"
-                                style={{
-                                    y: imageY,
-                                }}
-                            >
+                    {/* Left Column: Image - Static, no scroll-driven animation */}
+                    <div className="relative">
+                        <div className="relative rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-md lg:max-w-full">
+                            <div className="relative aspect-square w-full">
                                 <img
                                     src="/about.webp"
                                     alt="Equipo ClipCode"
                                     className="w-full h-full object-cover"
                                     loading="lazy"
+                                    decoding="async"
                                 />
-                            </motion.div>
-                        </motion.div>
+                            </div>
+                        </div>
 
-                        {/* Decorative Element */}
-                        <motion.div
-                            className="absolute -bottom-4 -right-4 w-20 h-20 bg-blue-600 rounded-full blur-xl"
-                            style={{
-                                opacity: useTransform(clipProgress, [100, 0], [0, 0.3]),
-                            }}
-                        />
+                        {/* Decorative Element - Static opacity */}
+                        <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-blue-600 rounded-full opacity-20" />
                     </div>
 
                     {/* Right Column: Content */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
-                        className="text-left relative"
-                    >
-                        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-indigo-500/10 rounded-full blur-[60px] pointer-events-none" />
+                    <div className="text-left relative">
+                        {/* Optimized background - static gradient instead of blur-[60px] */}
+                        <div
+                            className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full pointer-events-none opacity-20"
+                            style={{
+                                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%)'
+                            }}
+                        />
 
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-950/30 backdrop-blur-sm mb-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-950/30 mb-6">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
@@ -118,7 +89,7 @@ export function AboutUs() {
                                 </span>
                             </Button>
                         </div>
-                    </motion.div>
+                    </div>
 
                 </div>
             </div>

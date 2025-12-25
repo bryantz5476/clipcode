@@ -19,6 +19,7 @@ export default function Home() {
   const plansRef = useRef<HTMLElement>(null);
   const contactRef = useRef<HTMLElement>(null);
 
+
   // Lógica de Scroll
   const scrollToPlans = useCallback(() => {
     if (plansRef.current) {
@@ -31,6 +32,8 @@ export default function Home() {
       contactRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, []);
+
+
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-blue-500/30">

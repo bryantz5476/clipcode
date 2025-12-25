@@ -1,77 +1,55 @@
-import { useEffect, useRef, forwardRef } from 'react';
-import { motion, useInView, useMotionValue, useSpring } from 'framer-motion';
+import { useRef, useEffect, forwardRef, memo } from 'react';
+import { useInView } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MessageCircle, Phone } from 'lucide-react';
 
-function AnimatedCounter({ value }: { value: string }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const motionValue = useMotionValue(0);
-  const springValue = useSpring(motionValue, { duration: 2000, bounce: 0 }); // Smooth 2s duration
-
-  // Parse number and suffix
-  const numberMatch = value.match(/\d+/);
-  const number = numberMatch ? parseInt(numberMatch[0]) : 0;
-  const suffix = value.replace(/\d+/, '');
+// Ultra-performant counter using direct DOM manipulation
+const PerformanceCounter = memo(({ end, suffix = "" }: { end: number, suffix?: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "0px" });
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (isInView) {
-      motionValue.set(number);
+    if (isInView && !hasAnimated.current && ref.current) {
+      hasAnimated.current = true;
+      const duration = 2000;
+      const startTime = performance.now();
+      const element = ref.current;
+
+      const step = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        const current = Math.floor(end * ease);
+        element.textContent = `${current}${suffix}`;
+        if (progress < 1) requestAnimationFrame(step);
+      };
+
+      requestAnimationFrame(step);
     }
-  }, [isInView, number, motionValue]);
+  }, [isInView, end, suffix]);
 
-  return (
-    <span ref={ref} className="inline-block">
-      {/* 
-         Note: generic framer-motion approach for text content is tricky with simple nodes. 
-         Better approach: use a specialized hook or 'display' generic.
-         However, for simplicity in React 19/Framer Motion, let's use a simpler text update or separate display. 
-         Let's stick to a reliable approach: formatted display via child Render 
-      */}
-      <DisplayValue value={springValue} suffix={suffix} />
-    </span>
-  );
-}
-
-// Helper to render the MotionValue as text
-function DisplayValue({ value, suffix }: { value: any, suffix: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    return value.on("change", (latest: number) => {
-      if (ref.current) {
-        ref.current.textContent = Math.round(latest) + suffix;
-      }
-    });
-  }, [value, suffix]);
-
-  return <span ref={ref} />;
-}
-
-
+  return <div ref={ref} className="inline-block tabular-nums">0{suffix}</div>;
+});
 
 export const FinalCTA = forwardRef<HTMLElement, { onScrollToPlans: () => void }>(({ onScrollToPlans }, ref) => {
   return (
     <section
       ref={ref}
-      className="relative py-24 overflow-hidden"
+      className="relative py-24 overflow-hidden bg-gradient-to-br from-navy-900 via-navy-950 to-black"
       id="contact"
       data-testid="section-cta"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-950 to-black" />
-
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
-      </div>
+      {/* Static Background */}
+      <div
+        className="absolute inset-0 z-0 opacity-40 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle at 25% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 45%), radial-gradient(circle at 75% 80%, rgba(37, 99, 235, 0.1) 0%, transparent 45%)'
+        }}
+      />
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <div>
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-display leading-tight">
             ¿Listo Para Transformar
             <br />
@@ -82,85 +60,74 @@ export const FinalCTA = forwardRef<HTMLElement, { onScrollToPlans: () => void }>
             Da el paso hacia una web que realmente trabaje para tu negocio.
             Sin compromisos, sin letra pequeña.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
-        >
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button
             size="lg"
             onClick={onScrollToPlans}
-            className="bg-white text-navy-900 font-semibold px-8 py-6 text-lg group"
+            className="relative bg-white text-navy-900 font-semibold px-8 py-6 text-lg group shadow-lg shadow-white/5 overflow-hidden border-none"
             data-testid="button-cta-empezar"
           >
-            Empezar Mi Proyecto
-            <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+            <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/80 to-transparent -translate-x-full group-hover:animate-glare" />
+            <span className="relative flex items-center z-10">
+              Empezar Mi Proyecto
+              <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </span>
           </Button>
 
           <Button
             size="lg"
             variant="outline"
             onClick={() => window.open('https://wa.me/34607328443?text=%C2%A1Hola!%20Quiero%20dar%20el%20paso%20al%20futuro', '_blank')}
-            className="relative bg-transparent border border-blue-500/50 text-white px-8 py-6 text-lg rounded-lg tracking-wide backdrop-blur-sm transition-all duration-300 overflow-hidden group hover:bg-white/5"
+            className="relative bg-transparent border border-blue-500/30 text-white px-8 py-6 text-lg rounded-lg tracking-wide transition-colors hover:bg-blue-500/10 group overflow-hidden"
             data-testid="button-cta-contactar"
           >
-            <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-glare" />
+            <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-glare" />
             <span className="relative flex items-center z-10">
               <MessageCircle className="mr-2 w-5 h-5" />
               Contactar Primero
             </span>
           </Button>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto"
-        >
-          {[
-            { icon: '30', label: 'Días de Garantía', sublabel: 'Satisfacción total o devolución' },
-            { icon: '24h', label: 'Primer Boceto', sublabel: 'Comenzamos tu proyecto rápido' },
-            { icon: '100%', label: 'Código Tuyo', sublabel: 'Propiedad total del proyecto' }
-          ].map((item, index) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-              className="text-center"
-            >
-              <div className="text-3xl font-bold text-blue-400 mb-2">
-                <AnimatedCounter value={item.icon} />
-              </div>
-              <div className="text-white font-medium mb-1">{item.label}</div>
-              <div className="text-sm text-gray-400">{item.sublabel}</div>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Stats Grid */}
+        <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+          <div className="text-center">
+            <div className="text-4xl font-bold text-blue-400 mb-2">
+              <PerformanceCounter end={30} />
+            </div>
+            <div className="text-white font-medium mb-1">Días de Garantía</div>
+            <div className="text-sm text-gray-400">Satisfacción total o devolución</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl font-bold text-blue-400 mb-2">
+              <PerformanceCounter end={24} suffix="h" />
+            </div>
+            <div className="text-white font-medium mb-1">Primer Boceto</div>
+            <div className="text-sm text-gray-400">Comenzamos tu proyecto rápido</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl font-bold text-blue-400 mb-2">
+              <PerformanceCounter end={100} suffix="%" />
+            </div>
+            <div className="text-white font-medium mb-1">Código Tuyo</div>
+            <div className="text-sm text-gray-400">Propiedad total del proyecto</div>
+          </div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-16 pt-8 border-t border-blue-500/10"
-        >
+        <div className="mt-16 pt-8 border-t border-blue-500/10">
           <p className="text-gray-400 text-sm mb-4">
             ¿Prefieres hablar directamente? Estamos aquí para ayudarte.
           </p>
-          <div className="flex items-center justify-center gap-2 text-blue-400">
+          <div
+            className="flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300 transition-colors cursor-pointer"
+            onClick={() => window.open('https://wa.me/34607328443', '_blank')}
+          >
             <Phone className="w-4 h-4" />
-            <span className="font-medium"><a href="https://wa.me/34607328443" target="_blank">Consulta sin compromiso</a></span>
-
+            <span className="font-medium">Consulta sin compromiso</span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
