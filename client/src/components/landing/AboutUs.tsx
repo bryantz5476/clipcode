@@ -45,7 +45,7 @@ export function AboutUs() {
                                 }}
                             >
                                 <img
-                                    src="/iphone17.webp"
+                                    src="/about.webp"
                                     alt="Equipo ClipCode"
                                     className="w-full h-full object-cover"
                                     loading="lazy"
