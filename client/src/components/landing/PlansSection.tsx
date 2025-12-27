@@ -62,87 +62,89 @@ const plans = [
     ],
     highlighted: false,
     cta: 'Hablar sobre mi Tienda',
-    link: 'https://wa.me/34607328443?text=Hola,%20estoy%20interesado%20en%20el%20Plan%20E-commerce%20de%20990%E2%82%AC'
+    link: 'https://wa.me/34607328443?text=Hola,%20estoy%20interesado%20en%20el%20Plan%20E-commerce%20de%20990%E2%82%8AC'
   }
 ];
 
-// Lightweight card with CSS-only border animation
+// Premium card with static border + moving beam animation
 function PlanCard({ plan, onAction }: { plan: typeof plans[0]; onAction: () => void }) {
   return (
-    <div className="relative h-full group">
-      {/* CSS-only animated border using gradient */}
+    <div className="relative h-full group p-[2px] rounded-3xl overflow-hidden bg-[#020617]">
+
+      {/* 1. Static Border Layer (Limit visibility/opacity purely via color) */}
       <div
-        className={`absolute -inset-[1px] rounded-3xl overflow-hidden ${plan.highlighted ? 'opacity-100' : 'opacity-60'}`}
+        className={`absolute inset-0 ${plan.highlighted ? 'bg-blue-600/40' : 'bg-white/10'}`}
+      />
+
+      {/* 2. Moving Beam Layer (Rotates on top of static layer) */}
+      <div
+        className="absolute inset-[-100%]"
         style={{
           background: plan.highlighted
-            ? 'linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #3b82f6 100%)'
-            : 'linear-gradient(135deg, #475569 0%, #1e293b 50%, #475569 100%)',
-          backgroundSize: '200% 200%',
-          animation: 'gradient-shift 4s ease infinite'
+            ? 'conic-gradient(from 0deg, transparent 0 270deg, #3b82f6 300deg, #93c5fd 330deg, #ffffff 360deg)' // Super intense beam for Pro (White fast tip)
+            : 'conic-gradient(from 0deg, transparent 0 320deg, #94a3b8 350deg, #e2e8f0 360deg)', // Subtle white/gray beam for others
+          animation: 'border-rotate 4s linear infinite', // Unified speed for synchronization
+          opacity: 1
         }}
       />
 
-      {/* Glow effect - static, no animation */}
-      {plan.highlighted && (
-        <div className="absolute -inset-2 rounded-3xl bg-blue-600/15 opacity-50 group-hover:opacity-80 transition-opacity duration-300" />
-      )}
+      {/* 3. Inner Content Mask - The actual card background */}
+      <div className="relative h-full rounded-[23px] bg-[#020617] p-1 z-10">
+        <div className={`relative h-full rounded-[22px] bg-[#020617] p-8 flex flex-col transition-all duration-300`}>
 
-      {/* Content */}
-      <div className={`relative h-full rounded-[22px] bg-[#020617] p-8 flex flex-col border transition-all duration-300 ${plan.highlighted ? 'border-blue-500/20 shadow-2xl shadow-blue-900/10' : 'border-white/5 hover:border-white/10'
-        }`}>
+          {plan.highlighted && (
+            <div className="absolute top-0 right-0 p-4">
+              <Badge className="bg-blue-600 text-white border-none py-1 px-3 shadow-lg shadow-blue-600/40">
+                <Sparkles className="w-3 h-3 mr-1 inline" /> POPULAR
+              </Badge>
+            </div>
+          )}
 
-        {plan.highlighted && (
-          <div className="absolute top-0 right-0 p-4">
-            <Badge className="bg-blue-600 text-white border-none py-1 px-3 shadow-lg shadow-blue-600/40">
-              <Sparkles className="w-3 h-3 mr-1 inline" /> POPULAR
-            </Badge>
+          <div className="mb-8">
+            <h3 className={`text-xl font-medium mb-3 ${plan.highlighted ? 'text-white' : 'text-gray-300'}`}>{plan.name}</h3>
+            <div className="flex items-baseline gap-1">
+              <span className="text-5xl font-bold text-white tracking-tight">{plan.price}</span>
+              <span className="text-lg text-gray-500">€</span>
+            </div>
+            <p className="mt-4 text-sm text-gray-400 leading-relaxed min-h-[60px]">{plan.description}</p>
           </div>
-        )}
 
-        <div className="mb-8">
-          <h3 className={`text-xl font-medium mb-3 ${plan.highlighted ? 'text-white' : 'text-gray-300'}`}>{plan.name}</h3>
-          <div className="flex items-baseline gap-1">
-            <span className="text-5xl font-bold text-white tracking-tight">{plan.price}</span>
-            <span className="text-lg text-gray-500">€</span>
-          </div>
-          <p className="mt-4 text-sm text-gray-400 leading-relaxed min-h-[60px]">{plan.description}</p>
-        </div>
-
-        <div className="mb-8">
-          <Button
-            onClick={onAction}
-            className={`group w-full py-6 rounded-xl transition-all duration-300 ${plan.highlighted
+          <div className="mb-8">
+            <Button
+              onClick={onAction}
+              className={`group w-full py-6 rounded-xl transition-all duration-300 ${plan.highlighted
                 ? 'bg-white text-navy-950 font-bold hover:bg-gray-100 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] border-transparent'
                 : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
-              }`}
-          >
-            {plan.cta}
-            {plan.id === 'basico' ? (
-              <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 opacity-50 group-hover:opacity-100 group-hover:translate-x-1" />
-            ) : (
-              <FaWhatsapp className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 group-hover:translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
-            )}
-          </Button>
+                }`}
+            >
+              {plan.cta}
+              {plan.id === 'basico' ? (
+                <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 opacity-50 group-hover:opacity-100 group-hover:translate-x-1" />
+              ) : (
+                <FaWhatsapp className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 group-hover:translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
+              )}
+            </Button>
+          </div>
+
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
+
+          <ul className="space-y-4 mt-auto">
+            {plan.features.map((feature, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <div className={`mt-0.5 rounded-full p-0.5 ${plan.highlighted ? 'bg-blue-500/20' : 'bg-gray-800'}`}>
+                  <Check className={`w-3.5 h-3.5 ${plan.highlighted ? 'text-blue-400' : 'text-gray-500'}`} />
+                </div>
+                <span className="text-sm text-gray-300 group-hover:text-white transition-colors">{feature}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
-
-        <ul className="space-y-4 mt-auto">
-          {plan.features.map((feature, i) => (
-            <li key={i} className="flex items-start gap-3">
-              <div className={`mt-0.5 rounded-full p-0.5 ${plan.highlighted ? 'bg-blue-500/20' : 'bg-gray-800'}`}>
-                <Check className={`w-3.5 h-3.5 ${plan.highlighted ? 'text-blue-400' : 'text-gray-500'}`} />
-              </div>
-              <span className="text-sm text-gray-300 group-hover:text-white transition-colors">{feature}</span>
-            </li>
-          ))}
-        </ul>
       </div>
 
       <style>{`
-        @keyframes gradient-shift {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+        @keyframes border-rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>

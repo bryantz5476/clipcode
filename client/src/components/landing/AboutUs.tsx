@@ -20,7 +20,7 @@ export function AboutUs() {
                         <div className="relative rounded-2xl overflow-hidden shadow-2xl mx-auto max-w-md lg:max-w-full">
                             <div className="relative aspect-square w-full">
                                 <img
-                                    src="/about.webp"
+                                    src="/hero.webp"
                                     alt="Equipo ClipCode"
                                     className="w-full h-full object-cover"
                                     loading="lazy"
@@ -29,8 +29,7 @@ export function AboutUs() {
                             </div>
                         </div>
 
-                        {/* Decorative Element - Static opacity */}
-                        <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-blue-600 rounded-full opacity-20" />
+
                     </div>
 
                     {/* Right Column: Content */}

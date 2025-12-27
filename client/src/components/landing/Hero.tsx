@@ -119,7 +119,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
             className="w-[55%] sm:w-[45%] md:w-[40%] lg:w-[75%] xl:w-[80%] h-[85%] sm:h-[90%] z-10"
           >
             <img
-              src="/hero.webp"
+              src="/about.webp"
               alt="Vista previa de la aplicación ClipCode"
               loading="eager"
               decoding="async"
