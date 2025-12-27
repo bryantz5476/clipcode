@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check, ArrowRight, Sparkles } from 'lucide-react';
@@ -66,10 +66,28 @@ const plans = [
   }
 ];
 
-// Premium card with static border + moving beam animation
+// Premium card with static border + moving beam animation - Optimized
 function PlanCard({ plan, onAction }: { plan: typeof plans[0]; onAction: () => void }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1, rootMargin: '50px' } // Pre-load slightly before view
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="relative h-full group p-[2px] rounded-3xl overflow-hidden bg-[#020617]">
+    <div ref={cardRef} className="relative h-full group p-[2px] rounded-3xl overflow-hidden bg-[#020617] transform-gpu translate-z-0">
 
       {/* 1. Static Border Layer (Limit visibility/opacity purely via color) */}
       <div
@@ -77,13 +95,15 @@ function PlanCard({ plan, onAction }: { plan: typeof plans[0]; onAction: () => v
       />
 
       {/* 2. Moving Beam Layer (Rotates on top of static layer) */}
+      {/* Optimization: Use will-change for GPU promotion. Animation runs continuously to maintain sync. */}
       <div
-        className="absolute inset-[-100%]"
+        className="absolute inset-[-50%]"
         style={{
           background: plan.highlighted
-            ? 'conic-gradient(from 0deg, transparent 0 270deg, #3b82f6 300deg, #93c5fd 330deg, #ffffff 360deg)' // Super intense beam for Pro (White fast tip)
-            : 'conic-gradient(from 0deg, transparent 0 320deg, #94a3b8 350deg, #e2e8f0 360deg)', // Subtle white/gray beam for others
-          animation: 'border-rotate 4s linear infinite', // Unified speed for synchronization
+            ? 'conic-gradient(from 0deg, transparent 0 270deg, #3b82f6 300deg, #93c5fd 330deg, #ffffff 360deg)'
+            : 'conic-gradient(from 0deg, transparent 0 320deg, #94a3b8 350deg, #e2e8f0 360deg)',
+          animation: 'border-rotate 4s linear infinite',
+          willChange: 'transform',
           opacity: 1
         }}
       />
