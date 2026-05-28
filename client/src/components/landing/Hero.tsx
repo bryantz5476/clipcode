@@ -29,7 +29,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
       <PlasmaBackground />
 
       {/* Dark gradient only where the text lives — keeps plasma vivid on the right */}
-      <div className="absolute inset-0 z-[1] pointer-events-none bg-[#020617]/70" />
+      <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-[#020617]/95 via-[#020617]/75 to-[#020617]/55" />
 
       {/* Main Content */}
       <div className="container relative z-10 mx-auto px-6 flex items-center pt-32 md:pt-40 pb-12">
