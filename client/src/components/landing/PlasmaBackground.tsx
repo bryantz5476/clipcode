@@ -192,7 +192,8 @@ export default function PlasmaBackground() {
         const uTime = gl.getUniformLocation(program, 'u_time');
         const uMouse = gl.getUniformLocation(program, 'u_mouse');
 
-        let animationId: number;
+        let animationId: number = 0;
+        let isVisible = true;
         let startTime = performance.now();
 
         const mouse = { x: 0, y: 0 };
@@ -217,6 +218,7 @@ export default function PlasmaBackground() {
         resize();
 
         const render = () => {
+            if (!isVisible) return;
             const time = (performance.now() - startTime) * 0.001;
             gl.uniform1f(uTime, time);
             gl.uniform2f(uMouse, mouse.x, window.innerHeight - mouse.y); // Flip Y
@@ -224,12 +226,29 @@ export default function PlasmaBackground() {
             gl.drawArrays(gl.TRIANGLES, 0, 6);
             animationId = requestAnimationFrame(render);
         };
+
+        // Pause WebGL when hero scrolls out of view to save GPU/CPU
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting && !isVisible) {
+                    isVisible = true;
+                    render();
+                } else if (!entry.isIntersecting) {
+                    isVisible = false;
+                    cancelAnimationFrame(animationId);
+                }
+            },
+            { threshold: 0.01 }
+        );
+        observer.observe(mount);
         render();
 
         return () => {
+            isVisible = false;
             cancelAnimationFrame(animationId);
             window.removeEventListener('resize', resize);
             window.removeEventListener('mousemove', handleMouseMove);
+            observer.disconnect();
             if (mount.contains(canvas)) mount.removeChild(canvas);
             gl.deleteProgram(program);
         };

@@ -21,7 +21,7 @@ const services = [
   {
     icon: ShoppingCart,
     title: 'E-commerce',
-    description: 'Tiendas online con Shopify para vender tus productos sin límites'
+    description: 'Tiendas online profesionales para vender tus productos sin límites'
   },
   {
     icon: Calendar,

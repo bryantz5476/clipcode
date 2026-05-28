@@ -1,5 +1,4 @@
-import { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, MousePointer2, MessageCircle } from 'lucide-react';
 
@@ -19,11 +18,10 @@ const revealVariants = {
 };
 
 export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: () => void, onScrollToContact: () => void }) {
-  const containerRef = useRef<HTMLElement>(null);
+  const prefersReduced = useReducedMotion();
 
   return (
     <section
-      ref={containerRef}
       className="relative min-h-[95vh] flex items-center overflow-hidden bg-[#020617]"
       data-testid="section-hero"
     >
@@ -31,14 +29,13 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
       <PlasmaBackground />
 
       {/* Main Content */}
-      <div className="container relative z-10 mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center pt-32 md:pt-40 pb-12 lg:pb-0">
+      <div className="container relative z-10 mx-auto px-6 flex items-center pt-32 md:pt-40 pb-12">
 
-        {/* Left Content */}
-        <div className="max-w-2xl text-left pointer-events-none">
+        <div className="w-full max-w-3xl pointer-events-none">
           <div className="pointer-events-auto">
             <motion.div
               custom={0}
-              initial="hidden"
+              initial={prefersReduced ? false : "hidden"}
               animate="visible"
               variants={revealVariants}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-950/30 backdrop-blur-md mb-6"
@@ -54,7 +51,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
 
             <motion.h1
               custom={1}
-              initial="hidden"
+              initial={prefersReduced ? false : "hidden"}
               animate="visible"
               variants={revealVariants}
               className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight font-display tracking-tight"
@@ -68,9 +65,9 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
                   className="absolute w-full h-2 md:h-3 -bottom-1 left-0 text-blue-500 opacity-60"
                   viewBox="0 0 100 10"
                   preserveAspectRatio="none"
-                  initial={{ pathLength: 0 }}
+                  initial={prefersReduced ? false : { pathLength: 0 }}
                   animate={{ pathLength: 1 }}
-                  transition={{ duration: 1, delay: 1 }}
+                  transition={prefersReduced ? { duration: 0 } : { duration: 1, delay: 1 }}
                 >
                   <motion.path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="3" fill="none" />
                 </motion.svg>
@@ -79,7 +76,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
 
             <motion.p
               custom={2}
-              initial="hidden"
+              initial={prefersReduced ? false : "hidden"}
               animate="visible"
               variants={revealVariants}
               className="text-base md:text-xl text-gray-400 mb-8 md:mb-10 leading-relaxed max-w-lg"
@@ -90,7 +87,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
 
             <motion.div
               custom={3}
-              initial="hidden"
+              initial={prefersReduced ? false : "hidden"}
               animate="visible"
               variants={revealVariants}
               className="flex flex-col sm:flex-row gap-4 sm:gap-5"
@@ -129,7 +126,7 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
             {/* Social Proof Mini */}
             <motion.div
               custom={4}
-              initial="hidden"
+              initial={prefersReduced ? false : "hidden"}
               animate="visible"
               variants={revealVariants}
               className="mt-10 md:mt-12 flex items-center gap-6 text-sm text-gray-500 font-medium"
@@ -141,19 +138,13 @@ export function Hero({ onScrollToPlans, onScrollToContact }: { onScrollToPlans: 
                   { name: 'Vertex', src: '/logo-vertex.png' },
                   { name: 'Angel', src: '/angel.webp' }
                 ].map((logo, i) => (
-                  <motion.div
+                  <div
                     key={i}
-                    className="w-10 h-10 rounded-full border-2 border-[#020617] bg-white flex items-center justify-center overflow-hidden relative shadow-lg shadow-blue-900/20"
-                    animate={{ y: [0, -6, 0] }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: i * 0.2,
-                    }}
+                    className="w-10 h-10 rounded-full border-2 border-[#020617] bg-white flex items-center justify-center overflow-hidden relative shadow-lg shadow-blue-900/20 animate-logo-float"
+                    style={{ animationDelay: `${i * 0.2}s` }}
                   >
-                    <img src={logo.src} alt={logo.name} className="w-full h-full object-cover" />
-                  </motion.div>
+                    <img src={logo.src} alt={logo.name} className="w-full h-full object-cover" decoding="async" />
+                  </div>
                 ))}
               </div>
               <div className="flex flex-col">

@@ -2,9 +2,8 @@ import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
+import { Check, Sparkles } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
-import { useShopifyProducts } from '@/hooks/use-shopify';
 
 const plans = [
   {
@@ -25,6 +24,7 @@ const plans = [
     ],
     highlighted: false,
     cta: 'Empezar mi Proyecto Ya',
+    link: 'https://wa.me/34607328443?text=Hola,%20me%20interesa%20el%20Plan%20Lanzamiento%20de%20390%E2%82%AC.%20%C2%BFMe%20puedes%20dar%20m%C3%A1s%20informaci%C3%B3n%3F'
   },
   {
     id: 'profesional',
@@ -79,22 +79,14 @@ function MagicCard({
 
   return (
     <div className="relative h-full group">
-      {/* MAGIC BORDER LAYER - LASER NEON (Comet Tail) */}
-      <div className={`absolute -inset-[2px] rounded-3xl overflow-hidden`}>
-        <motion.div
-          className="absolute inset-[-100%] w-[300%] h-[300%] left-[-100%] top-[-100%]"
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "linear"
-          }}
+      {/* MAGIC BORDER LAYER - LASER NEON (Comet Tail) — CSS animation (compositor thread, 0 JS overhead) */}
+      <div className="absolute -inset-[2px] rounded-3xl overflow-hidden">
+        <div
+          className="absolute inset-[-100%] w-[300%] h-[300%] left-[-100%] top-[-100%] animate-[spin_3s_linear_infinite] will-change-transform"
           style={{
-            willChange: 'transform',
-            // Transparent for most of the circle, then fade blue -> cyan -> white tip
             background: plan.highlighted
               ? 'conic-gradient(from 0deg, transparent 0 300deg, #1d4ed8 320deg, #00f2ff 340deg, #ffffff 360deg)'
-              : 'conic-gradient(from 0deg, transparent 0 300deg, #1e293b 320deg, #60a5fa 360deg)' // Subtle Blue-Gray for others
+              : 'conic-gradient(from 0deg, transparent 0 300deg, #1e293b 320deg, #60a5fa 360deg)'
           }}
         />
       </div>
@@ -138,11 +130,7 @@ function MagicCard({
               }`}
           >
             {plan.cta}
-            {plan.id === 'basico' ? (
-              <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 opacity-50 group-hover:opacity-100 group-hover:translate-x-1" />
-            ) : (
-              <FaWhatsapp className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 group-hover:translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
-            )}
+            <FaWhatsapp className={`w-4 h-4 ml-2 transition-transform duration-300 ${plan.highlighted ? 'text-navy-950 group-hover:translate-x-1' : 'opacity-50 group-hover:opacity-100 group-hover:translate-x-1'}`} />
           </Button>
         </div>
 
@@ -165,12 +153,8 @@ function MagicCard({
 }
 
 export const PlansSection = forwardRef<HTMLElement>((props, ref) => {
-  const { products } = useShopifyProducts();
-
   const handleAction = (plan: typeof plans[0]) => {
-    if (plan.id === 'basico') {
-      window.location.href = 'https://clip-code.myshopify.com/cart/52232987050250:1';
-    } else if (plan.link) {
+    if (plan.link) {
       window.open(plan.link, '_blank');
     }
   };

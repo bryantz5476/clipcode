@@ -91,6 +91,8 @@ export function Gallery() {
               {image.src ? (
                 <img
                   src={image.src}
+                  srcSet={`${image.src.replace('.webp', '-sm.webp')} 480w, ${image.src.replace('.webp', '-md.webp')} 960w, ${image.src} 1600w`}
+                  sizes="(max-width: 640px) calc(50vw - 24px), (max-width: 1280px) calc(25vw - 16px), 320px"
                   alt={image.title}
                   className="
                     absolute inset-0 w-full h-full object-cover
@@ -101,6 +103,7 @@ export function Gallery() {
                     [backface-visibility:hidden]
                   "
                   loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div className={`absolute inset-0 bg-gradient-to-br ${image.gradient} z-0`} />
@@ -154,6 +157,7 @@ export function Gallery() {
                       src={selectedImage.src}
                       alt={selectedImage.title}
                       className="w-full h-full object-cover"
+                      decoding="async"
                     />
                   ) : (
                     <div className={`w-full h-full bg-gradient-to-br ${selectedImage.gradient}`} />

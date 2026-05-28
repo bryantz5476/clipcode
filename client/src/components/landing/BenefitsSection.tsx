@@ -25,7 +25,7 @@ const ecommerceBenefits = [
   {
     icon: Shield,
     title: 'Legal y Seguro',
-    description: 'Shopify cumple todas las normativas de e-commerce y protección de datos.'
+    description: 'Nuestra plataforma cumple todas las normativas de e-commerce y protección de datos.'
   },
   {
     icon: Zap,
@@ -220,7 +220,7 @@ export function BenefitsSection() {
               className="mt-8 p-6 rounded-xl bg-gradient-to-r from-indigo-500/10 to-transparent border-l border-indigo-500/30 backdrop-blur-sm"
             >
               <p className="text-gray-300 italic text-sm">
-                "Diseñado para quienes no juegan a vender, sino a construir un imperio online. Potencia bruta de Shopify + Diseño de élite."
+                "Diseñado para quienes no juegan a vender, sino a construir un imperio online. Tecnología de e-commerce avanzada + Diseño de élite."
               </p>
             </motion.div>
           </div>

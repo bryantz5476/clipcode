@@ -1,4 +1,4 @@
-import { useRef, useCallback, Suspense, lazy } from 'react';
+import React, { useRef, useCallback, useEffect, Suspense, lazy } from 'react';
 // Componentes de UI (Critical Path)
 import { Header } from '@/components/landing/Header';
 import { Hero } from '@/components/landing/Hero';
@@ -32,6 +32,27 @@ export default function Home() {
     }
   }, []);
 
+  // Prefetch gallery images during idle time so they're ready before the user scrolls
+  useEffect(() => {
+    const prefetch = () => {
+      ['/ecommerce.webp', '/clinica.webp', '/iphone17.webp', '/macbarber.webp'].forEach(src => {
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.as = 'image';
+        link.href = src;
+        document.head.appendChild(link);
+      });
+    };
+
+    if ('requestIdleCallback' in window) {
+      const id = (window as any).requestIdleCallback(prefetch, { timeout: 3000 });
+      return () => (window as any).cancelIdleCallback(id);
+    } else {
+      const id = setTimeout(prefetch, 2000);
+      return () => clearTimeout(id);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-white selection:bg-blue-500/30">
 
@@ -51,12 +72,12 @@ export default function Home() {
           </div>
         }>
           {/* 3. Banner Infinito (Clientes/Tecnologías) */}
-          <div style={{ contentVisibility: 'auto' }}>
+          <div style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 140px' } as React.CSSProperties}>
             <InfiniteBanner />
           </div>
 
           {/* 4. Carrusel de Servicios */}
-          <div style={{ contentVisibility: 'auto' }}>
+          <div style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 650px' } as React.CSSProperties}>
             <ServicesCarousel />
           </div>
 
@@ -64,17 +85,17 @@ export default function Home() {
           <PlansSection ref={plansRef} />
 
           {/* 6. Beneficios y Características */}
-          <div style={{ contentVisibility: 'auto' }}>
+          <div style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 750px' } as React.CSSProperties}>
             <BenefitsSection />
           </div>
 
           {/* 7. Galería de Trabajos */}
-          <div style={{ contentVisibility: 'auto' }}>
+          <div style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 750px' } as React.CSSProperties}>
             <Gallery />
           </div>
 
           {/* 8. Testimonios */}
-          <div style={{ contentVisibility: 'auto' }}>
+          <div style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 650px' } as React.CSSProperties}>
             <Testimonials />
           </div>
 
