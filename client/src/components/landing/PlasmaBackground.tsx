@@ -89,10 +89,10 @@ void main() {
     vec2 st = gl_FragCoord.xy / u_resolution.xy;
     st.x *= u_resolution.x / u_resolution.y;
 
-    float time = u_time * 0.05; // Much lighter, slower movement
-    
+    float time = u_time * 0.05;
+
     // Domain Warping for SILK effect
-    vec3 p = vec3(st * 1.5, time); // Scale down for larger shapes
+    vec3 p = vec3(st * 1.2, time); // Larger swirls, more coverage
 
     float n1 = snoise(p);
     float n2 = snoise(p + vec3(n1 * 2.0 + time * 0.2, n1 * 3.0 - time * 0.1, 0.0));
@@ -100,39 +100,22 @@ void main() {
 
     // Create the "folds" (ridge noise)
     float fold = n3 * 0.5 + 0.5; // 0..1
-    
-    // Sharpen the curves to look like smoke/silk
-    float silk = smoothstep(0.2, 0.8, fold);
-    float glow = pow(silk, 3.0); // Focus the light
 
-    // Project Colors:
-    // Background: Deep Dark Navy (#020617)
-    // Smoke: Purple (#7e22ce) mixed with Blue (#3b82f6)
-    
+    // Wider coverage - lower exponent spreads the glow across more pixels
+    float silk = smoothstep(0.1, 0.9, fold);
+    float glow = pow(silk, 1.8);
+
     vec3 bg = vec3(0.01, 0.02, 0.09); // #020617
-    vec3 purple = vec3(0.5, 0.1, 0.8); // Purple
-    vec3 blue = vec3(0.1, 0.3, 0.9);   // Blue
+    vec3 purple = vec3(0.5, 0.1, 0.8);
+    vec3 blue = vec3(0.1, 0.3, 0.9);
 
-    // Mix smoke color based on noise
     vec3 smokeColor = mix(blue, purple, n1 * 0.5 + 0.5);
-    
-    // CENTER MASK: Tighter constraint to middle
-    // Use raw 0..1 UVs for masking to ensure it's strictly screen-centered
-    vec2 uv_screen = gl_FragCoord.xy / u_resolution.xy;
-    float distFromCenter = abs(uv_screen.x - 0.5);
-    
-    // Mask fades faster: Valid only within central 30% (approx)
-    // smoothstep(edge1, edge0, x) -> 1.0 at center, 0.0 at dist=0.15
-    // This makes the beam much narrower ("apretado")
-    float centerMask = smoothstep(0.15, 0.0, distFromCenter); 
-    
-    // Apply usage of mask to the GLOW opacity
-    // The sides will be completely clean (just bg color)
-    vec3 finalColor = bg + smokeColor * glow * centerMask * 0.8;
 
-    // Add subtle vignette for overall depth
+    vec3 finalColor = bg + smokeColor * glow * 1.4;
+
+    // Soft vignette — only slightly darkens edges, keeps corners visible
     vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-    float vig = 1.0 - length(uv - 0.5) * 0.6;
+    float vig = 1.0 - length(uv - 0.5) * 0.3;
     finalColor *= vig;
 
     fragColor = vec4(finalColor, 1.0);
