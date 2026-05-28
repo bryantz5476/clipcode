@@ -8,12 +8,11 @@ void main() {
 `;
 
 const fragmentShaderSource = `#version 300 es
-precision highp float;
+precision mediump float;
 
 out vec4 fragColor;
 uniform vec2 u_resolution;
 uniform float u_time;
-uniform vec2 u_mouse;
 
 // Simplex 3D Noise (standard implementation)
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -96,10 +95,8 @@ void main() {
 
     float n1 = snoise(p);
     float n2 = snoise(p + vec3(n1 * 2.0 + time * 0.2, n1 * 3.0 - time * 0.1, 0.0));
-    float n3 = snoise(p + vec3(n2 * 4.0 - time * 0.3, n2 * 2.0 + time * 0.1, 0.0));
 
-    // Create the "folds" (ridge noise)
-    float fold = n3 * 0.5 + 0.5; // 0..1
+    float fold = n2 * 0.5 + 0.5;
 
     // Wider coverage - lower exponent spreads the glow across more pixels
     float silk = smoothstep(0.1, 0.9, fold);
@@ -173,23 +170,16 @@ export default function PlasmaBackground() {
         // Uniforms
         const uResolution = gl.getUniformLocation(program, 'u_resolution');
         const uTime = gl.getUniformLocation(program, 'u_time');
-        const uMouse = gl.getUniformLocation(program, 'u_mouse');
 
         let animationId: number = 0;
         let isVisible = true;
-        let startTime = performance.now();
-
-        const mouse = { x: 0, y: 0 };
-        const handleMouseMove = (e: MouseEvent) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-        };
-        window.addEventListener('mousemove', handleMouseMove);
+        let lastFrame = 0;
+        const FRAME_MS = 1000 / 30; // 30fps cap — plasma moves slowly, 30fps is indistinguishable
+        const startTime = performance.now();
 
         const resize = () => {
-            // Limit DPR to 1.5 for performance on high-res screens
-            // Background fluids don't need perfect pixel ratio
-            const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            // Cap at 1.0 DPR — background noise doesn't need retina resolution
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.0);
             canvas.width = window.innerWidth * dpr;
             canvas.height = window.innerHeight * dpr;
             canvas.style.width = window.innerWidth + 'px';
@@ -200,14 +190,13 @@ export default function PlasmaBackground() {
         window.addEventListener('resize', resize);
         resize();
 
-        const render = () => {
+        const render = (ts: number) => {
             if (!isVisible) return;
-            const time = (performance.now() - startTime) * 0.001;
-            gl.uniform1f(uTime, time);
-            gl.uniform2f(uMouse, mouse.x, window.innerHeight - mouse.y); // Flip Y
-
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
             animationId = requestAnimationFrame(render);
+            if (ts - lastFrame < FRAME_MS) return; // skip frame
+            lastFrame = ts;
+            gl.uniform1f(uTime, (ts - startTime) * 0.001);
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
         };
 
         // Pause WebGL when hero scrolls out of view to save GPU/CPU
@@ -215,7 +204,7 @@ export default function PlasmaBackground() {
             ([entry]) => {
                 if (entry.isIntersecting && !isVisible) {
                     isVisible = true;
-                    render();
+                    animationId = requestAnimationFrame(render);
                 } else if (!entry.isIntersecting) {
                     isVisible = false;
                     cancelAnimationFrame(animationId);
@@ -224,13 +213,12 @@ export default function PlasmaBackground() {
             { threshold: 0.01 }
         );
         observer.observe(mount);
-        render();
+        animationId = requestAnimationFrame(render);
 
         return () => {
             isVisible = false;
             cancelAnimationFrame(animationId);
             window.removeEventListener('resize', resize);
-            window.removeEventListener('mousemove', handleMouseMove);
             observer.disconnect();
             if (mount.contains(canvas)) mount.removeChild(canvas);
             gl.deleteProgram(program);
