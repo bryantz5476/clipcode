@@ -61,9 +61,9 @@ export const FinalCTA = forwardRef<HTMLElement, { onScrollToPlans: () => void }>
       {/* Background: starts BLACK (matching Testimonials), transitions to navy, ends black */}
       <div className="absolute inset-0 bg-gradient-to-b from-black via-navy-900 to-black" />
 
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl" />
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96" style={{ background: 'radial-gradient(ellipse at center, rgba(37,99,235,0.12) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80" style={{ background: 'radial-gradient(ellipse at center, rgba(59,130,246,0.10) 0%, transparent 70%)' }} />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">

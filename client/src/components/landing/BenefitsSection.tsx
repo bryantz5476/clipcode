@@ -87,7 +87,7 @@ function HoloCard({
       }}
       className="relative group perspective-1000"
     >
-      <div className="absolute inset-0 bg-blue-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" />
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl" style={{ boxShadow: 'inset 0 0 0 1px rgba(59,130,246,0.3), 0 0 24px rgba(59,130,246,0.15)' }} />
 
       <Card className="relative p-6 h-full bg-[#0a0f1e]/80 backdrop-blur-md border border-white/10 overflow-hidden transform-style-3d group-hover:border-blue-500/50 transition-colors duration-300">
 
@@ -123,9 +123,9 @@ export function BenefitsSection() {
       {/* Smooth Transition from previous section (Navy -> Black) */}
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-[#020617] to-transparent pointer-events-none z-10" />
 
-      {/* Background Decor */}
-      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-indigo-900/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* Background Decor — radial gradients, no filter cost */}
+      <div className="absolute top-1/4 left-0 w-[400px] h-[400px] pointer-events-none" style={{ background: 'radial-gradient(ellipse at left, rgba(29,78,216,0.08) 0%, transparent 70%)' }} />
+      <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] pointer-events-none" style={{ background: 'radial-gradient(ellipse at right, rgba(67,56,202,0.08) 0%, transparent 70%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div

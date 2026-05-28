@@ -83,8 +83,8 @@ export function Testimonials() {
       {/* Smooth Transition from previous section (Gallery ends at navy-950) */}
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-[#020617] to-transparent pointer-events-none z-10" />
 
-      {/* Ambient Background */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none opacity-30" />
+      {/* Ambient Background — radial gradient, no filter cost */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] pointer-events-none opacity-20" style={{ background: 'radial-gradient(ellipse at center, rgba(29,78,216,0.3) 0%, transparent 70%)' }} />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div
@@ -113,19 +113,17 @@ export function Testimonials() {
             >
               <div className="relative group">
                 {/* Magic Border Layer (Permanent) */}
-                <div className="absolute -inset-[2px] rounded-[2rem] overflow-hidden opacity-100">
-                  <motion.div
-                    className="absolute inset-[-100%] w-[300%] h-[300%] left-[-100%] top-[-100%]"
+                <div className="absolute -inset-[2px] rounded-[2rem] overflow-hidden">
+                  <div
+                    className="absolute inset-[-50%] w-[200%] h-[200%] animate-[spin_3s_linear_infinite] will-change-transform"
                     style={{
-                      backgroundImage: 'conic-gradient(from 0deg, transparent 0 300deg, #1d4ed8 320deg, #00f2ff 340deg, #ffffff 360deg)'
+                      background: 'conic-gradient(from 0deg, transparent 0 300deg, #1d4ed8 320deg, #00f2ff 340deg, #ffffff 360deg)'
                     }}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   />
                 </div>
 
-                {/* Outer Glow (Permanent) */}
-                <div className="absolute -inset-1 rounded-[2rem] bg-cyan-500/20 blur-xl opacity-50" />
+                {/* Outer Glow — box-shadow avoids GPU filter raster */}
+                <div className="absolute -inset-1 rounded-[2rem] pointer-events-none" style={{ boxShadow: '0 0 28px 4px rgba(6,182,212,0.18)' }} />
 
                 {/* Content Container */}
                 <div className="relative rounded-[2rem] bg-gray-900/90 backdrop-blur-xl border border-blue-500/30 p-6 md:p-8 text-center md:text-left transition-colors">
