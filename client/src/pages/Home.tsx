@@ -82,7 +82,9 @@ export default function Home() {
           </div>
 
           {/* 5. SECCIÓN DE PRECIOS (Con Ref para el scroll) */}
-          <PlansSection ref={plansRef} />
+          <div style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 900px' } as React.CSSProperties}>
+            <PlansSection ref={plansRef} />
+          </div>
 
           {/* 6. Beneficios y Características */}
           <div style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 750px' } as React.CSSProperties}>

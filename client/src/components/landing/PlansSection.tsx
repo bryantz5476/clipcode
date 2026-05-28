@@ -79,10 +79,10 @@ function MagicCard({
 
   return (
     <div className="relative h-full group">
-      {/* MAGIC BORDER LAYER - LASER NEON (Comet Tail) — CSS animation (compositor thread, 0 JS overhead) */}
+      {/* MAGIC BORDER LAYER — smaller spinning element reduces GPU compositing area */}
       <div className="absolute -inset-[2px] rounded-3xl overflow-hidden">
         <div
-          className="absolute inset-[-100%] w-[300%] h-[300%] left-[-100%] top-[-100%] animate-[spin_3s_linear_infinite] will-change-transform"
+          className="absolute inset-[-50%] w-[200%] h-[200%] animate-[spin_3s_linear_infinite] will-change-transform"
           style={{
             background: plan.highlighted
               ? 'conic-gradient(from 0deg, transparent 0 300deg, #1d4ed8 320deg, #00f2ff 340deg, #ffffff 360deg)'
@@ -91,13 +91,13 @@ function MagicCard({
         />
       </div>
 
-      {/* GLOW FOLLOWER (Static background glow for ambiance) */}
+      {/* GLOW — box-shadow is compositor-friendly, avoids expensive blur filter */}
       {plan.highlighted && (
-        <div className="absolute -inset-1 rounded-3xl bg-cyan-500/30 blur-xl opacity-100 pointer-events-none" />
+        <div className="absolute -inset-1 rounded-3xl pointer-events-none" style={{ boxShadow: '0 0 32px 4px rgba(6,182,212,0.25)' }} />
       )}
 
       {/* CONTENT CONTAINER */}
-      <div className={`relative h-full rounded-[22px] bg-[#020617] p-8 flex flex-col border transition-all duration-300 ${plan.highlighted
+      <div className={`relative h-full rounded-[22px] bg-[#020617] p-8 flex flex-col border transition-[border-color,box-shadow] duration-300 ${plan.highlighted
         ? 'border-blue-500/20 shadow-2xl shadow-blue-900/10'
         : 'border-white/5 hover:border-white/10'
         }`}>
